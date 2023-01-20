@@ -23,3 +23,7 @@
 .dark {
     background: rgb(146, 112, 66);
 }
+
+.selected {
+    background-color: red;
+}

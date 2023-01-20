@@ -1,20 +1,3 @@
-// for (let i =0; i<8; i++){
-//     for (let j = 0; j<8;j++){
-//         const squareEl = document.createElement("div");
-//         squareEl.classList.add("square");    
-        
-//         // light or dark
-
-//         if ((i + j) % 2 === 0) {
-//             squareEl.classList.add("white");
-//         } else {
-//             squareEl.classList.add("black");
-//         }    
-    
-//     }
-// }
-
-
 async function createBoard (){
     board = await getFen()
     console.log(board)
@@ -29,8 +12,9 @@ async function createBoard (){
             }
             // console.log(i, j)
             piece = board[i][j]
+            cords = i+""+j
             
-            drawSquares(sqColor,piece)
+            drawSquares(sqColor,piece,cords)
         }
     }
 
@@ -40,12 +24,12 @@ createBoard()
 
 
 
-function drawSquares (sqColor,piece){
+function drawSquares (sqColor,piece,cords){
 
     let board = document.getElementById('board')
     let square = document.createElement('div')
     square.classList.add('square', sqColor)
-
+    square.id = cords
     board.appendChild(square)
 
     let img = document.createElement('img')
@@ -93,6 +77,15 @@ function drawSquares (sqColor,piece){
     }
 
     square.appendChild(img)
+
+    square.addEventListener('click',function(){
+        let selected = document.querySelectorAll('.selected')
+        selected.forEach(function(sq){
+            sq.classList.remove('selected')
+        })
+        console.log(this.id)
+        this.classList.add('selected')
+    })
 }
 
 
@@ -103,4 +96,40 @@ async function getFen(){
         board = data.data
     })
     return board
+}
+
+
+
+function getMoves(){
+    const formdata = new FormData()
+    const csrf = document.getElementsByName('csrfmiddlewaretoken')
+    formdata.append('csrfmiddlewaretoken', csrf[0].value)
+
+    $.ajax({
+        type: "POST",
+        url: "",
+        enctype: 'multipart/form-data',
+        data: formdata,
+        success: function (res) {
+            if (res.data =='verified'){
+                modal.classList.add('is-active')
+
+
+                setTimeout(function() {
+                    window.location.href = redirectURL.value
+                }, 1500);
+            }
+            else if (res.data =='wrong'){
+                wrongNot.classList.remove('is-hidden')
+                
+            }
+
+            
+        },
+
+        cache: false,
+        contentType: false,
+        processData: false,
+
+    });
 }
