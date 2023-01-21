@@ -1,5 +1,5 @@
 async function createBoard (){
-    board = await getFen()
+    board = await getBoard()
     console.log(board)
     for (let i =0; i<8; i++){
         for (let j = 0; j<8;j++){
@@ -83,16 +83,16 @@ function drawSquares (sqColor,piece,cords){
         selected.forEach(function(sq){
             sq.classList.remove('selected')
         })
-        console.log(this.id)
+        getMoves(this.id)
         this.classList.add('selected')
     })
 }
 
 
-async function getFen(){
+async function getBoard(){
     let board;
 
-    await $.get ('/fen', function(data){
+    await $.get ('/board', function(data){
         board = data.data
     })
     return board
@@ -100,31 +100,19 @@ async function getFen(){
 
 
 
-function getMoves(){
+function getMoves(sqId){
     const formdata = new FormData()
     const csrf = document.getElementsByName('csrfmiddlewaretoken')
     formdata.append('csrfmiddlewaretoken', csrf[0].value)
+    formdata.append('sqId',sqId)
 
     $.ajax({
         type: "POST",
-        url: "",
+        url: "/board",
         enctype: 'multipart/form-data',
         data: formdata,
         success: function (res) {
-            if (res.data =='verified'){
-                modal.classList.add('is-active')
-
-
-                setTimeout(function() {
-                    window.location.href = redirectURL.value
-                }, 1500);
-            }
-            else if (res.data =='wrong'){
-                wrongNot.classList.remove('is-hidden')
-                
-            }
-
-            
+            console.log(res)
         },
 
         cache: false,
