@@ -27,3 +27,15 @@
 .selected {
     background-color: red;
 }
+
+.uiNum{
+    position: absolute;
+    top: 4px;
+    left: 4px;
+}
+
+.uiLet{
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+}

@@ -4,17 +4,24 @@ async function createBoard (){
     for (let i =0; i<8; i++){
         for (let j = 0; j<8;j++){
             let sqColor
-            if ((i+j)%2 == '0'){
-                sqColor = 'dark'
+            let uiNum
+            let uiLet
+            if ((i+j)%2 == 0){
+                sqColor = 'light'
             } 
             else{
-                sqColor = 'light'
+                sqColor = 'dark'
             }
             // console.log(i, j)
             piece = board[i][j]
             cords = i+""+j
-            
-            drawSquares(sqColor,piece,cords)
+            if (j == 0){
+                uiNum = 8-i 
+            }
+            if(i == 7){
+                uiLet = String.fromCharCode(97+j)
+            }
+            drawSquares(sqColor,piece,cords,uiNum,uiLet)
         }
     }
 
@@ -24,7 +31,7 @@ createBoard()
 
 
 
-function drawSquares (sqColor,piece,cords){
+function drawSquares (sqColor,piece,cords,uiNum,uiLet){
 
     let board = document.getElementById('board')
     let square = document.createElement('div')
@@ -32,6 +39,8 @@ function drawSquares (sqColor,piece,cords){
     square.id = cords
     board.appendChild(square)
 
+
+    // Draw the images
     let img = document.createElement('img')
 
     switch (piece){
@@ -75,9 +84,25 @@ function drawSquares (sqColor,piece,cords){
             break;
 
     }
-
     square.appendChild(img)
+    
+    // Draw the board Cordiants
+    if (uiNum){
+        let cordNumber = document.createElement('span')
+        cordNumber.classList.add('uiNum')
+        cordNumber.innerText = uiNum
+        square.appendChild(cordNumber)
+    }
 
+    if (uiLet){
+        let cordLetter = document.createElement('span')
+        cordLetter.classList.add('uiLet')
+        cordLetter.innerText = uiLet
+        square.appendChild(cordLetter)
+    }
+
+    
+    // handle the click events
     square.addEventListener('click',function(){
         let selected = document.querySelectorAll('.selected')
         selected.forEach(function(sq){
@@ -88,7 +113,7 @@ function drawSquares (sqColor,piece,cords){
     })
 }
 
-
+// sends get request to get the board position
 async function getBoard(){
     let board;
 
@@ -99,7 +124,7 @@ async function getBoard(){
 }
 
 
-
+// get the legal moves.
 function getMoves(sqId){
     const formdata = new FormData()
     const csrf = document.getElementsByName('csrfmiddlewaretoken')
