@@ -13,9 +13,9 @@ def board(request):
     ["p", "p", "p", "p", "p", "p", "p", "p"],
     ["", "", "", "", "", "", "", ""],
     ["", "", "", "", "", "", "", ""],
-    ["", "R", "", "", "", "", "", ""],
+    ["", "", "B", "", "", "R", "", ""],
     ["", "", "", "", "", "", "", ""],
-    ["P", "P", "P", "P", "P", "P", "P", "P"],
+    ["P", "P", "P", "", "", "P", "P", "P"],
     ["R", "N", "B", "Q", "K", "B", "N", "R"]
     ]
 
@@ -34,20 +34,24 @@ def getLegalMoves(square,board):
     piece = board[yCord][xCord]
     availableMoves = []
 
+    # Light Pawn Moves
     if piece == 'P':
-        # Up moves
+        # up moves
         if not board[yCord-1][xCord]:
             availableMoves.append(strC(yCord-1,xCord))
+
+        # first move
         if yCord == 6 and not board[yCord-1][xCord] and not board[yCord-2][xCord]:
             availableMoves.append(strC(yCord-2,xCord))
 
-        # Capture Diagonal
+        # capture diagonal
         if xCord > 0 and board[yCord-1][xCord-1] and board[yCord-1][xCord-1].islower():
             availableMoves.append(strC(yCord-1, xCord-1))
         
         if xCord <7 and board[yCord-1][xCord+1] and board[yCord-1][xCord+1].islower():
             availableMoves.append(strC(yCord-1,xCord+1))
-        
+    
+    # Light Rook Move
     if piece == 'R':
         # upper move
         for i in range(yCord-1,-1,-1):
@@ -68,7 +72,7 @@ def getLegalMoves(square,board):
             elif not board[i][xCord]:
                 availableMoves.append(strC(i,xCord))
         
-        #right moves
+        # right moves
         for i in range(xCord+1,8):
             if board[yCord][i].isupper():
                 break
@@ -77,8 +81,6 @@ def getLegalMoves(square,board):
                 break
             elif not board[yCord][i]:
                 availableMoves.append(strC(yCord, i))
-    
-        
 
         # left moves
         for i in range(xCord-1,-1, -1):
@@ -90,7 +92,71 @@ def getLegalMoves(square,board):
             elif not board[yCord][i]:
                 availableMoves.append(strC(yCord, i))
 
+    # Light Bishop Moves
+    if piece == 'B':
+        # top-left
+        i = xCord-1
+        j = yCord-1
+        while i >= 0 and j >= 0:
+            if board[j][i].isupper():
+                break
+            elif board[j][i].islower():
+                availableMoves.append(strC(j, i))
+            elif not board[j][i]:
+                availableMoves.append(strC(j,i))
             
+            i-=1
+            j-=1
+
+        # top-right
+        i = xCord+1
+        j = yCord-1
+
+        while i < 8 and j >=0:
+            if board[j][i].isupper():
+                break
+            elif board[j][i].islower():
+                availableMoves.append(strC(j, i))
+                break
+            elif not board[j][i]:
+                availableMoves.append(strC(j,i))
+            i +=1 
+            j -=1
+
+        # bottom right
+        i = xCord +1
+        j = yCord +1
+
+        while i < 8 and j < 8:
+            if board[j][i].isupper():
+                break
+            elif board[j][i].islower():
+                availableMoves.append(strC(j, i))
+                break
+            elif not board[j][i]:
+                availableMoves.append(strC(j,i))
+            i +=1 
+            j +=1            
+
+
+        # bottom left
+        i = xCord -1
+        j = yCord +1
+
+        while i >= 0 and j < 8:
+            if board[j][i].isupper():
+                break
+            elif board[j][i].islower():
+                availableMoves.append(strC(j, i))
+                break
+            elif not board[j][i]:
+                availableMoves.append(strC(j,i))
+            i -=1 
+            j +=1            
+
+
+
+
 
     
 

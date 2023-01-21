@@ -111,7 +111,6 @@ function drawSquares (sqColor,piece,cords,uiNum,uiLet){
             sq.classList.remove('highlightAvailable')
         })
         getMoves(this.id)
-        console.log(this.id)
         this.classList.add('selected')
     })
 }
@@ -154,6 +153,5 @@ function highlightAvailableMoves(moves){
     for (let move in moves){
         let square = document.getElementById(moves[move])
         square.classList.add('highlightAvailable')
-        console.log(moves[move])
     }
 }
