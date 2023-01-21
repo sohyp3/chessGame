@@ -14,7 +14,7 @@ def board(request):
     ["", "", "", "", "", "", "", ""],
     ["", "", "", "", "", "", "", ""],
     ["", "", "", "", "", "", "", ""],
-    ["", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "P", ""],
     ["P", "P", "P", "P", "P", "P", "P", "P"],
     ["R", "N", "B", "Q", "K", "B", "N", "R"]
     ]
@@ -43,14 +43,17 @@ def getLegalMoves(square,board):
             availableMoves.append(strC(yCord-2,xCord))
 
         # Capture Diagonal
-        if xCord > 0 and board[yCord-1][xCord-1]:
+        if xCord > 0 and board[yCord-1][xCord-1] and board[yCord-1][xCord-1].islower():
             availableMoves.append(strC(yCord-1, xCord-1))
         
-        if xCord <7 and board[yCord-1][xCord+1]:
+        if xCord <7 and board[yCord-1][xCord+1] and board[yCord-1][xCord+1].islower():
             availableMoves.append(strC(yCord-1,xCord+1))
         
-
-        
+    if piece == 'R':
+        for i in range(yCord-1,-1,-1):
+            if not board[i][xCord]:
+                availableMoves.append(strC(y, x))
+    
 
     return availableMoves
 
