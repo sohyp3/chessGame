@@ -1,6 +1,5 @@
 async function createBoard (){
     board = await getBoard()
-    console.log(board)
     for (let i =0; i<8; i++){
         for (let j = 0; j<8;j++){
             let sqColor
@@ -12,7 +11,6 @@ async function createBoard (){
             else{
                 sqColor = 'dark'
             }
-            // console.log(i, j)
             piece = board[i][j]
             cords = i+""+j
             if (j == 0){
@@ -105,10 +103,15 @@ function drawSquares (sqColor,piece,cords,uiNum,uiLet){
     // handle the click events
     square.addEventListener('click',function(){
         let selected = document.querySelectorAll('.selected')
+        let highlighted = document.querySelectorAll('.highlightAvailable')
         selected.forEach(function(sq){
             sq.classList.remove('selected')
         })
+        highlighted.forEach(function(sq){
+            sq.classList.remove('highlightAvailable')
+        })
         getMoves(this.id)
+        console.log(this.id)
         this.classList.add('selected')
     })
 }
@@ -137,7 +140,7 @@ function getMoves(sqId){
         enctype: 'multipart/form-data',
         data: formdata,
         success: function (res) {
-            console.log(res)
+            highlightAvailableMoves(res.moves)
         },
 
         cache: false,
@@ -145,4 +148,12 @@ function getMoves(sqId){
         processData: false,
 
     });
+}
+
+function highlightAvailableMoves(moves){
+    for (let move in moves){
+        let square = document.getElementById(moves[move])
+        square.classList.add('highlightAvailable')
+        console.log(moves[move])
+    }
 }

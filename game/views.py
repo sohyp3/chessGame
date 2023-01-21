@@ -13,15 +13,14 @@ def board(request):
     ["p", "p", "p", "p", "p", "p", "p", "p"],
     ["", "", "", "", "", "", "", ""],
     ["", "", "", "", "", "", "", ""],
+    ["", "R", "", "", "", "", "", ""],
     ["", "", "", "", "", "", "", ""],
-    ["", "", "", "", "", "", "P", ""],
     ["P", "P", "P", "P", "P", "P", "P", "P"],
     ["R", "N", "B", "Q", "K", "B", "N", "R"]
     ]
 
     if is_ajax(request):
         square = request.POST.get('sqId')
-        print(square)
         if square:
             return JsonResponse({'moves':getLegalMoves(square, board)})
         return JsonResponse({'data':board})
@@ -50,9 +49,49 @@ def getLegalMoves(square,board):
             availableMoves.append(strC(yCord-1,xCord+1))
         
     if piece == 'R':
+        # upper move
         for i in range(yCord-1,-1,-1):
-            if not board[i][xCord]:
-                availableMoves.append(strC(y, x))
+            if board[i][xCord].isupper():
+                break
+            elif board[i][xCord].islower():
+                availableMoves.append(strC(i, xCord))
+                break
+            elif not board[i][xCord]:
+                availableMoves.append(strC(i,xCord))
+        # lower moves
+        for i in range(yCord+1,8):
+            if board[i][xCord].isupper():
+                break
+            elif board[i][xCord].islower():
+                availableMoves.append(strC(i, xCord))
+                break
+            elif not board[i][xCord]:
+                availableMoves.append(strC(i,xCord))
+        
+        #right moves
+        for i in range(xCord+1,8):
+            if board[yCord][i].isupper():
+                break
+            elif board[yCord][i].islower():
+                availableMoves.append(strC(yCord, i))
+                break
+            elif not board[yCord][i]:
+                availableMoves.append(strC(yCord, i))
+    
+        
+
+        # left moves
+        for i in range(xCord-1,-1, -1):
+            if board[yCord][i].isupper():
+                break
+            elif board[yCord][i].islower():
+                availableMoves.append(strC(yCord, i))
+                break
+            elif not board[yCord][i]:
+                availableMoves.append(strC(yCord, i))
+
+            
+
     
 
     return availableMoves
