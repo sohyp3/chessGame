@@ -11,8 +11,8 @@ def board(request):
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         ["", "", "", "", "", "", "", ""],
-        ["", "", "b", "", "", "", "", ""],
-        ["", "", "r", "B", "", "", "R", ""],
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
         ["", "", "", "", "", "", "", ""],
         ["P", "P", "P", "P", "P", "P", "P", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
@@ -35,20 +35,10 @@ def getLegalMoves(square, board):
 
     # Light Pawn Moves
     if piece == 'P':
-        # up moves
-        if not board[yCord-1][xCord]:
-            availableMoves.append(strC(yCord-1, xCord))
-
-        # first move
-        if yCord == 6 and not board[yCord-1][xCord] and not board[yCord-2][xCord]:
-            availableMoves.append(strC(yCord-2, xCord))
-
-        # capture diagonal
-        if xCord > 0 and board[yCord-1][xCord-1] and board[yCord-1][xCord-1].islower():
-            availableMoves.append(strC(yCord-1, xCord-1))
-
-        if xCord < 7 and board[yCord-1][xCord+1] and board[yCord-1][xCord+1].islower():
-            availableMoves.append(strC(yCord-1, xCord+1))
+        availableMoves = pawnLegalMoves(xCord, yCord, board, True)
+    if piece == 'p':
+        availableMoves = pawnLegalMoves(xCord, yCord, board, False)
+        
 
     # Rook Moves
     if piece == 'R':
@@ -78,6 +68,34 @@ def getLegalMoves(square, board):
 
 
     return availableMoves
+
+
+def pawnLegalMoves(xCord,yCord,board,color):
+    # color True is light || False is dark
+
+    if color:
+        dest = -1
+        base = 6
+    else:
+        dest = 1
+        base = 1
+        
+    availableMoves = []
+    # up moves
+    if not board[yCord+dest][xCord]:
+        availableMoves.append(strC(yCord+ dest, xCord))
+
+    # first move
+    if yCord == base and not board[yCord+ dest][xCord] and not board[yCord+ (dest*2)][xCord]:
+        availableMoves.append(strC(yCord+(dest*2), xCord))
+
+    # capture diagonal
+    if xCord > 0 and board[yCord+ dest][xCord-1] and low_inverse(color,  board[yCord+ dest][xCord-1]):
+        availableMoves.append(strC(yCord+ dest, xCord-1))
+
+    if xCord < 7 and board[yCord+ dest][xCord+1] and low_inverse(color, board[yCord+ dest][xCord+1]):
+        availableMoves.append(strC(yCord+ dest, xCord+1))
+    return availableMoves    
 
 
 def knightLegalMoves (xCord,yCord,board,color):
