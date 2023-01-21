@@ -11,8 +11,8 @@ def board(request):
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""],
+        ["", "", "b", "", "", "", "", ""],
+        ["", "", "r", "B", "", "", "R", ""],
         ["", "", "", "", "", "", "", ""],
         ["P", "P", "P", "P", "P", "P", "P", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
@@ -50,124 +50,181 @@ def getLegalMoves(square, board):
         if xCord < 7 and board[yCord-1][xCord+1] and board[yCord-1][xCord+1].islower():
             availableMoves.append(strC(yCord-1, xCord+1))
 
-    # Light Rook Move
+    # Rook Moves
     if piece == 'R':
-        # upper move
-        for i in range(yCord-1, -1, -1):
-            if board[i][xCord].isupper():
-                break
-            elif board[i][xCord].islower():
-                availableMoves.append(strC(i, xCord))
-                break
-            elif not board[i][xCord]:
-                availableMoves.append(strC(i, xCord))
-        # lower moves
-        for i in range(yCord+1, 8):
-            if board[i][xCord].isupper():
-                break
-            elif board[i][xCord].islower():
-                availableMoves.append(strC(i, xCord))
-                break
-            elif not board[i][xCord]:
-                availableMoves.append(strC(i, xCord))
+        availableMoves =  straightLegalMoves(xCord, yCord, board,True)
 
-        # right moves
-        for i in range(xCord+1, 8):
-            if board[yCord][i].isupper():
-                break
-            elif board[yCord][i].islower():
-                availableMoves.append(strC(yCord, i))
-                break
-            elif not board[yCord][i]:
-                availableMoves.append(strC(yCord, i))
+    if piece == 'r':
+        availableMoves =  straightLegalMoves(xCord, yCord, board,False)
 
-        # left moves
-        for i in range(xCord-1, -1, -1):
-            if board[yCord][i].isupper():
-                break
-            elif board[yCord][i].islower():
-                availableMoves.append(strC(yCord, i))
-                break
-            elif not board[yCord][i]:
-                availableMoves.append(strC(yCord, i))
 
-    # Light Bishop Moves
+    # Bishop Moves
     if piece == 'B':
-        # top-left
-        i = xCord-1
-        j = yCord-1
-        while i >= 0 and j >= 0:
-            if board[j][i].isupper():
-                break
-            elif board[j][i].islower():
-                availableMoves.append(strC(j, i))
-            elif not board[j][i]:
-                availableMoves.append(strC(j, i))
+        availableMoves = diagonalLegalMoves(xCord, yCord, board, True)
 
-            i -= 1
-            j -= 1
-
-        # top-right
-        i = xCord+1
-        j = yCord-1
-
-        while i < 8 and j >= 0:
-            if board[j][i].isupper():
-                break
-            elif board[j][i].islower():
-                availableMoves.append(strC(j, i))
-                break
-            elif not board[j][i]:
-                availableMoves.append(strC(j, i))
-            i += 1
-            j -= 1
-
-        # bottom right
-        i = xCord + 1
-        j = yCord + 1
-
-        while i < 8 and j < 8:
-            if board[j][i].isupper():
-                break
-            elif board[j][i].islower():
-                availableMoves.append(strC(j, i))
-                break
-            elif not board[j][i]:
-                availableMoves.append(strC(j, i))
-            i += 1
-            j += 1
-
-        # bottom left
-        i = xCord - 1
-        j = yCord + 1
-
-        while i >= 0 and j < 8:
-            if board[j][i].isupper():
-                break
-            elif board[j][i].islower():
-                availableMoves.append(strC(j, i))
-                break
-            elif not board[j][i]:
-                availableMoves.append(strC(j, i))
-            i -= 1
-            j += 1
+    if piece == 'b':
+        availableMoves = diagonalLegalMoves(xCord, yCord, board, False)
 
     # Light kNite Moves
     if piece == 'N':
-        allNightMoves = [(yCord +1, xCord +2), (yCord -1, xCord +2), (yCord +1, xCord -2), (yCord -1, xCord -2),
-                        (yCord +2, xCord +1), (yCord +2, xCord -1), (yCord -2, xCord +1),(yCord -2, xCord -1)]
+        availableMoves =  knightLegalMoves(xCord, yCord, board,True)
+    
+    if piece == 'n':
+        availableMoves =  knightLegalMoves(xCord, yCord, board,False)
 
-        for nightMove in allNightMoves:
-            j,i = nightMove
-            if 0 <= i < 8 and 0 <= j <8:
-                if board[j][i].isupper():
-                    continue
-                availableMoves.append(strC(j, i))
+
+    # Light Queen
 
 
 
     return availableMoves
 
+
+def knightLegalMoves (xCord,yCord,board,color):
+    # color True is light || False is dark
+
+    availableMoves = []
+    allNightMoves = [(yCord +1, xCord +2), (yCord -1, xCord +2), (yCord +1, xCord -2), (yCord -1, xCord -2),
+                (yCord +2, xCord +1), (yCord +2, xCord -1), (yCord -2, xCord +1),(yCord -2, xCord -1)]
+
+    for nightMove in allNightMoves:
+        j,i = nightMove
+        if 0 <= i < 8 and 0 <= j <8:
+            if up_inverse(color, board[j][i]):
+                continue
+            availableMoves.append(strC(j, i))
+    return availableMoves
+
+
+def diagonalLegalMoves(xCord,yCord,board,color):
+    # color True is light || False is dark
+    availableMoves = []
+
+    # top-left
+    i = xCord-1
+    j = yCord-1
+    while i >= 0 and j >= 0:
+        if up_inverse(color, board[j][i]):
+            break
+        elif low_inverse(color, board[j][i]):
+            availableMoves.append(strC(j, i))
+            break
+        elif not board[j][i]:
+            availableMoves.append(strC(j, i))
+
+        i -= 1
+        j -= 1
+
+    # top-right
+    i = xCord+1
+    j = yCord-1
+
+    while i < 8 and j >= 0:
+        if up_inverse(color, board[j][i]):
+            break
+        elif low_inverse(color, board[j][i]):
+            availableMoves.append(strC(j, i))
+            break
+        elif not board[j][i]:
+            availableMoves.append(strC(j, i))
+        i += 1
+        j -= 1
+
+    # bottom right
+    i = xCord + 1
+    j = yCord + 1
+
+    while i < 8 and j < 8:
+        if up_inverse(color, board[j][i]):
+            break
+        elif low_inverse(color, board[j][i]):
+            availableMoves.append(strC(j, i))
+            break
+        elif not board[j][i]:
+            availableMoves.append(strC(j, i))
+        i += 1
+        j += 1
+
+    # bottom left
+    i = xCord - 1
+    j = yCord + 1
+
+    while i >= 0 and j < 8:
+        if up_inverse(color, board[j][i]):
+            break
+        elif low_inverse(color, board[j][i]):
+            availableMoves.append(strC(j, i))
+            break
+        elif not board[j][i]:
+            availableMoves.append(strC(j, i))
+        i -= 1
+        j += 1    
+
+    return availableMoves
+
+def straightLegalMoves(xCord,yCord,board,color):
+    # color True is light || False is dark
+
+    availableMoves = []
+    # upper move
+    for i in range(yCord-1, -1, -1):
+        if up_inverse(color, board[i][xCord]): 
+            break
+        if low_inverse(color, board[i][xCord]):
+            availableMoves.append(strC(i, xCord))
+            break
+        elif not board[i][xCord]:
+            availableMoves.append(strC(i, xCord))
+    # lower moves
+    for i in range(yCord+1, 8):
+        if up_inverse(color,board[i][xCord]):
+            break
+        elif low_inverse(color, board[i][xCord]):
+            availableMoves.append(strC(i, xCord))
+            break
+        elif not board[i][xCord]:
+            availableMoves.append(strC(i, xCord))
+
+    # right moves
+    for i in range(xCord+1, 8):
+        if up_inverse(color,board[yCord][i]):
+            break
+        elif low_inverse(color, board[yCord][i]):
+            availableMoves.append(strC(yCord, i))
+            break
+        elif not board[yCord][i]:
+            availableMoves.append(strC(yCord, i))
+
+    # left moves
+    for i in range(xCord-1, -1, -1):
+        if up_inverse(color,board[yCord][i]):
+            break
+        elif low_inverse(color, board[yCord][i]):
+            availableMoves.append(strC(yCord, i))
+            break
+        elif not board[yCord][i]:
+            availableMoves.append(strC(yCord, i))    
+    
+    return availableMoves
+
+
+# The mechanism i decide the friendly pieces vs enemy pieces is by checking if they are upper or lower
+# Light Colored pieces are upper case, dark colored pieces are lower case
+# Instead of rewriting the code for each color
+# I can inverse the result when i call the function to check the legal move.
+def up_inverse(switcher,string):
+    if switcher:
+        return string.isupper()
+    else:
+        if string:
+            return not string.isupper()
+
+def low_inverse(switcher,string):
+    if  switcher:
+        return  string.islower()
+    else:
+        if string:
+            return not string.islower()
 
 # i send and recieve the cords in 2 diget string for example 50
 # first diget (5) is the y value, and second diget (0) is the x value

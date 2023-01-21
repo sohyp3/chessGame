@@ -1,3 +1,7 @@
+body{
+    background-color: #333;
+}
+
 .chessboard {
     width: 640px;
     height: 640px;
