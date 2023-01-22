@@ -27,7 +27,18 @@ async function createBoard() {
 
 createBoard()
 
+function remoevOldSquares(){
+    let board = document.getElementById('board')
+    let body = document.body
 
+    board.parentNode.removeChild(board)
+
+    let newboard = document.createElement('div')
+    newboard.innerHTML = '<div class="chessboard" id="board"></div>' 
+
+    
+    body.appendChild(newboard)
+}
 
 function drawSquares(sqColor, piece, cords, uiNum, uiLet) {
 
@@ -107,7 +118,6 @@ function drawSquares(sqColor, piece, cords, uiNum, uiLet) {
 
         if (this.classList.contains('highlightAvailable')) {
             console.log(this.id)
-            console.log(selected[0].id)
             sendNewPlace(selected[0].id, this.id)
         }
         else {
@@ -139,7 +149,9 @@ function sendNewPlace(oldID, newID) {
         enctype: 'multipart/form-data',
         data: formdata,
         success: function (res) {
-            console.log(res)
+            remoevOldSquares()
+            console.log('removed')
+
             createBoard()
         },
 

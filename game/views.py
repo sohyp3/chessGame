@@ -7,6 +7,14 @@ def mainView(request):
 
 
 def board(request):
+    if 'turn' in request.session:
+        turn = request.session['turn']
+    else:
+        # True light, False dark
+        request.session['turn'] = True
+        turn = request.session['turn']
+
+
     if 'board' in request.session:
         board = request.session['board']
     else:
