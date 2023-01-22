@@ -7,22 +7,52 @@ def mainView(request):
 
 
 def board(request):
-    board = [
+    if 'board' in request.session:
+        board = request.session['board']
+    else:
+        request.session['board'] =[
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         ["", "", "", "", "", "", "", ""],
+        ["", "", "", "q", "", "", "", ""],
         ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""],
-        ["P", "P", "P", "P", "P", "P", "P", "P"],
+        ["", "", "", "", "", "Q", "", ""],
+        ["P", "P", "P", "P", "", "P", "P", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
-    ]
+        ]
+        board = request.session['board']
+
 
     if is_ajax(request):
         square = request.POST.get('sqId')
+        newSquare = request.POST.get('newSqId')
+        oldSquare = request.POST.get('oldSqId')
+        
         if square:
             return JsonResponse({'moves': getLegalMoves(square, board)})
+        if newSquare:
+            request.session['board'] = move_pieces(oldSquare, newSquare, board)
+            return JsonResponse({'data': 'h'})
+
         return JsonResponse({'data': board})
+
+
+
+def move_pieces(oldPlace,newPlace,board):
+    oldCords = int(oldPlace)
+    oX = int(oldPlace[1])
+    oY = int(oldPlace[0])
+
+    newCords = int(newPlace)
+    nX = int(newPlace[1])
+    nY = int(newPlace[0])
+
+    piece = board[oY][oX]
+    board[oY][oX] =""
+    board[nY][nX] = piece
+    return board
+
+
 
 
 def getLegalMoves(square, board):
@@ -33,39 +63,38 @@ def getLegalMoves(square, board):
     piece = board[yCord][xCord]
     availableMoves = []
 
-    # Light Pawn Moves
+    # Pawn Moves
     if piece == 'P':
         availableMoves = pawnLegalMoves(xCord, yCord, board, True)
     if piece == 'p':
         availableMoves = pawnLegalMoves(xCord, yCord, board, False)
         
-
     # Rook Moves
     if piece == 'R':
         availableMoves =  straightLegalMoves(xCord, yCord, board,True)
-
     if piece == 'r':
         availableMoves =  straightLegalMoves(xCord, yCord, board,False)
-
 
     # Bishop Moves
     if piece == 'B':
         availableMoves = diagonalLegalMoves(xCord, yCord, board, True)
-
     if piece == 'b':
         availableMoves = diagonalLegalMoves(xCord, yCord, board, False)
 
-    # Light kNite Moves
+    # Knight Moves
     if piece == 'N':
         availableMoves =  knightLegalMoves(xCord, yCord, board,True)
-    
     if piece == 'n':
         availableMoves =  knightLegalMoves(xCord, yCord, board,False)
 
 
-    # Light Queen
-
-
+    # Queen Moves
+    if piece == 'Q':
+        availableMoves = straightLegalMoves(xCord, yCord, board, True)
+        availableMoves += diagonalLegalMoves(xCord, yCord, board, True)
+    if piece == 'q':
+        availableMoves = straightLegalMoves(xCord, yCord, board, False)
+        availableMoves += diagonalLegalMoves(xCord, yCord, board, False)        
 
     return availableMoves
 

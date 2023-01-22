@@ -1,25 +1,25 @@
-async function createBoard (){
+async function createBoard() {
     board = await getBoard()
-    for (let i =0; i<8; i++){
-        for (let j = 0; j<8;j++){
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
             let sqColor
             let uiNum
             let uiLet
-            if ((i+j)%2 == 0){
+            if ((i + j) % 2 == 0) {
                 sqColor = 'light'
-            } 
-            else{
+            }
+            else {
                 sqColor = 'dark'
             }
             piece = board[i][j]
-            cords = i+""+j
-            if (j == 0){
-                uiNum = 8-i 
+            cords = i + "" + j
+            if (j == 0) {
+                uiNum = 8 - i
             }
-            if(i == 7){
-                uiLet = String.fromCharCode(97+j)
+            if (i == 7) {
+                uiLet = String.fromCharCode(97 + j)
             }
-            drawSquares(sqColor,piece,cords,uiNum,uiLet)
+            drawSquares(sqColor, piece, cords, uiNum, uiLet)
         }
     }
 
@@ -29,7 +29,7 @@ createBoard()
 
 
 
-function drawSquares (sqColor,piece,cords,uiNum,uiLet){
+function drawSquares(sqColor, piece, cords, uiNum, uiLet) {
 
     let board = document.getElementById('board')
     let square = document.createElement('div')
@@ -41,7 +41,7 @@ function drawSquares (sqColor,piece,cords,uiNum,uiLet){
     // Draw the images
     let img = document.createElement('img')
 
-    switch (piece){
+    switch (piece) {
         case 'r':
             img.src = "images/bR.png"
             break
@@ -60,7 +60,7 @@ function drawSquares (sqColor,piece,cords,uiNum,uiLet){
         case 'p':
             img.src = "images/bP.png"
             break;
-    
+
 
         case 'R':
             img.src = "images/wR.png"
@@ -83,43 +83,80 @@ function drawSquares (sqColor,piece,cords,uiNum,uiLet){
 
     }
     square.appendChild(img)
-    
+
     // Draw the board Cordiants
-    if (uiNum){
+    if (uiNum) {
         let cordNumber = document.createElement('span')
         cordNumber.classList.add('uiNum')
         cordNumber.innerText = uiNum
         square.appendChild(cordNumber)
     }
 
-    if (uiLet){
+    if (uiLet) {
         let cordLetter = document.createElement('span')
         cordLetter.classList.add('uiLet')
         cordLetter.innerText = uiLet
         square.appendChild(cordLetter)
     }
 
-    
+
     // handle the click events
-    square.addEventListener('click',function(){
+    square.addEventListener('click', function () {
         let selected = document.querySelectorAll('.selected')
         let highlighted = document.querySelectorAll('.highlightAvailable')
-        selected.forEach(function(sq){
-            sq.classList.remove('selected')
-        })
-        highlighted.forEach(function(sq){
-            sq.classList.remove('highlightAvailable')
-        })
-        getMoves(this.id)
-        this.classList.add('selected')
+
+        if (this.classList.contains('highlightAvailable')) {
+            console.log(this.id)
+            console.log(selected[0].id)
+            sendNewPlace(selected[0].id, this.id)
+        }
+        else {
+            selected.forEach(function (sq) {
+                sq.classList.remove('selected')
+            })
+            highlighted.forEach(function (sq) {
+                sq.classList.remove('highlightAvailable')
+            })
+            getMoves(this.id)
+            this.classList.add('selected')
+        }
+
     })
 }
 
+
+function sendNewPlace(oldID, newID) {
+    const formdata = new FormData()
+    const csrf = document.getElementsByName('csrfmiddlewaretoken')
+    formdata.append('csrfmiddlewaretoken', csrf[0].value)
+    formdata.append('newSqId', newID)
+    formdata.append('oldSqId', oldID)
+
+
+    $.ajax({
+        type: "POST",
+        url: "/board",
+        enctype: 'multipart/form-data',
+        data: formdata,
+        success: function (res) {
+            console.log(res)
+            createBoard()
+        },
+
+        cache: false,
+        contentType: false,
+        processData: false,
+
+    });
+}
+
+
+
 // sends get request to get the board position
-async function getBoard(){
+async function getBoard() {
     let board;
 
-    await $.get ('/board', function(data){
+    await $.get('/board', function (data) {
         board = data.data
     })
     return board
@@ -127,11 +164,11 @@ async function getBoard(){
 
 
 // get the legal moves.
-function getMoves(sqId){
+function getMoves(sqId) {
     const formdata = new FormData()
     const csrf = document.getElementsByName('csrfmiddlewaretoken')
     formdata.append('csrfmiddlewaretoken', csrf[0].value)
-    formdata.append('sqId',sqId)
+    formdata.append('sqId', sqId)
 
     $.ajax({
         type: "POST",
@@ -149,8 +186,8 @@ function getMoves(sqId){
     });
 }
 
-function highlightAvailableMoves(moves){
-    for (let move in moves){
+function highlightAvailableMoves(moves) {
+    for (let move in moves) {
         let square = document.getElementById(moves[move])
         square.classList.add('highlightAvailable')
     }
