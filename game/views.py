@@ -25,7 +25,7 @@ def board(request):
         ["", "", "", "", "", "", "", ""],
         ["", "", "", "", "", "", "", ""],
         ["", "", "", "", "", "", "", ""],
-        ["P", "P", "P", "P", "", "P", "P", "P"],
+        ["P", "P", "P", "P", "P", "P", "P", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
         ]
         board = request.session['board']
@@ -93,7 +93,7 @@ def resetBoard(request):
     ["", "", "", "", "", "", "", ""],
     ["", "", "", "", "", "", "", ""],
     ["", "", "", "", "", "", "", ""],
-    ["P", "P", "P", "P", "", "P", "P", "P"],
+    ["P", "P", "P", "P", "P", "P", "P", "P"],
     ["R", "N", "B", "Q", "K", "B", "N", "R"]
     ]
     request.session['turn'] = True
@@ -108,37 +108,30 @@ def getLegalMoves(square, board):
     availableMoves = []
 
     # Pawn Moves
-    if piece == 'P':
-        availableMoves = pawnLegalMoves(xCord, yCord, board, True)
-    if piece == 'p':
-        availableMoves = pawnLegalMoves(xCord, yCord, board, False)
+    if piece == 'P' or piece == 'p':
+        availableMoves = pawnLegalMoves(xCord, yCord, board, piece.isupper())
+
         
     # Rook Moves
-    if piece == 'R':
-        availableMoves =  straightLegalMoves(xCord, yCord, board,True)
-    if piece == 'r':
-        availableMoves =  straightLegalMoves(xCord, yCord, board,False)
+    if piece == 'R' or piece == 'r':
+        availableMoves =  straightLegalMoves(xCord, yCord, board,piece.isupper())
 
     # Bishop Moves
-    if piece == 'B':
-        availableMoves = diagonalLegalMoves(xCord, yCord, board, True)
-    if piece == 'b':
-        availableMoves = diagonalLegalMoves(xCord, yCord, board, False)
+    if piece == 'B' or piece == 'b':
+        availableMoves = diagonalLegalMoves(xCord, yCord, board, piece.isupper())
 
     # Knight Moves
-    if piece == 'N':
-        availableMoves =  knightLegalMoves(xCord, yCord, board,True)
-    if piece == 'n':
-        availableMoves =  knightLegalMoves(xCord, yCord, board,False)
-
+    if piece == 'N' or piece == 'n':
+        availableMoves =  knightLegalMoves(xCord, yCord, board,piece.isupper())
 
     # Queen Moves
-    if piece == 'Q':
-        availableMoves = straightLegalMoves(xCord, yCord, board, True)
-        availableMoves += diagonalLegalMoves(xCord, yCord, board, True)
-    if piece == 'q':
-        availableMoves = straightLegalMoves(xCord, yCord, board, False)
-        availableMoves += diagonalLegalMoves(xCord, yCord, board, False)        
+    if piece == 'Q' or piece == 'q':
+        availableMoves = straightLegalMoves(xCord, yCord, board, piece.isupper())
+        availableMoves += diagonalLegalMoves(xCord, yCord, board, piece.isupper())
+
+    # King Moves
+    if piece =='K' or piece == 'k':
+        availableMoves = kingLegalMoves(xCord, yCord, board, piece.isupper())
 
     return availableMoves
 
@@ -167,18 +160,6 @@ def pawnLegalMoves(xCord,yCord,board,color):
         availableMoves.append(strC(yCord+ dest, xCord+1))
     return availableMoves    
 
-
-def pawnColorMoves(color):
-    results = []
-    if color:
-        results.append(-1)
-        results.append(6)
-    else:
-        results.append(1)
-        results.append(1)
-    return results
-
-
 def knightLegalMoves (xCord,yCord,board,color):
     # color True is light || False is dark
 
@@ -193,7 +174,6 @@ def knightLegalMoves (xCord,yCord,board,color):
                 continue
             availableMoves.append(strC(j, i))
     return availableMoves
-
 
 def diagonalLegalMoves(xCord,yCord,board,color):
     # color True is light || False is dark
@@ -306,6 +286,29 @@ def straightLegalMoves(xCord,yCord,board,color):
     
     return availableMoves
 
+def kingLegalMoves(xCord,yCord,board,color):
+    # color True is light || False is dark
+    availableMoves = []
+    allKingMoves = [(yCord+1, xCord),(yCord-1, xCord),(yCord, xCord+1),(yCord, xCord-1),
+                    (yCord+1, xCord+1),(yCord-1, xCord+1),(yCord+1, xCord-1),(yCord-1, xCord-1),]
+    
+    for kingMove in allKingMoves:
+        j,i = kingMove
+        if 0 <= i < 8 and 0 <= j <8:
+            if up_inverse(color, board[j][i]):
+                continue
+            availableMoves.append(strC(j, i))
+    return availableMoves
+
+def pawnColorMoves(color):
+    results = []
+    if color:
+        results.append(-1)
+        results.append(6)
+    else:
+        results.append(1)
+        results.append(1)
+    return results
 
 # The mechanism i decide the friendly pieces vs enemy pieces is by checking if they are upper or lower
 # Light Colored pieces are upper case, dark colored pieces are lower case

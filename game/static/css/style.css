@@ -1,5 +1,6 @@
 body{
     background-color: #333;
+
 }
 
 .chessboard {
@@ -7,6 +8,7 @@ body{
     height: 640px;
     margin: 20px;
     border: 25px solid #333;
+    align-items: center;
 
 }
 
@@ -58,4 +60,13 @@ body{
     position: absolute;
     right: 20%;
     top:  5%;
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+}
+
+.turns{
+    color: white;
 }

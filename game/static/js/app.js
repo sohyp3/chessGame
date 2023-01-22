@@ -1,8 +1,17 @@
 async function createBoard() {
     responseInfo = await getBoard()
     turn = responseInfo.turn
-
     board = responseInfo.board
+
+    let turns = document.getElementById('turns')
+    console.log(turn)
+    if (turn == true){
+        turns.innerText = "White's Turn ⚪"
+    }
+    else{
+        turns.innerHTML = "Black's Turn ⚫"
+    }
+
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             let sqColor
@@ -32,7 +41,8 @@ createBoard()
 
 function remoevOldSquares() {
     let board = document.getElementById('board')
-    let body = document.body
+    let boardContainer = document.getElementById('boardContainer')
+    
 
     board.parentNode.removeChild(board)
 
@@ -40,13 +50,15 @@ function remoevOldSquares() {
     newboard.innerHTML = '<div class="chessboard" id="board"></div>'
 
 
-    body.appendChild(newboard)
+    boardContainer.appendChild(newboard)
 }
 
 function drawSquares(sqColor, piece, cords, uiNum, uiLet, turn) {
 
     let board = document.getElementById('board')
     let square = document.createElement('div')
+
+
     square.classList.add('square', sqColor)
     square.id = cords
     board.appendChild(square)
