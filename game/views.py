@@ -52,17 +52,36 @@ def board(request):
 
 
 
+
+
 def movePieces(oldPlace,newPlace,board):
+    # for pawns
+
+
     oldCords = int(oldPlace)
     oX = int(oldPlace[1])
     oY = int(oldPlace[0])
+
+    piece = board[oY][oX]
+    color = piece.isupper()
 
     newCords = int(newPlace)
     nX = int(newPlace[1])
     nY = int(newPlace[0])
 
-    piece = board[oY][oX]
-    board[oY][oX] =""
+
+    # Promotion
+    dest = pawnColorMoves(color)[0]
+    base = pawnColorMoves(color)[1]
+    # the promotion square
+    if piece.lower() == 'p' and nY == 6 + (base * dest):
+        if color:
+            piece = 'Q'
+        else:
+            piece = 'q'
+
+
+    board[oY][oX] = ""
     board[nY][nX] = piece
     return board
 
@@ -127,12 +146,9 @@ def getLegalMoves(square, board):
 def pawnLegalMoves(xCord,yCord,board,color):
     # color True is light || False is dark
 
-    if color:
-        dest = -1
-        base = 6
-    else:
-        dest = 1
-        base = 1
+    # dest is the direction
+    dest = pawnColorMoves(color)[0]
+    base = pawnColorMoves(color)[1]
         
     availableMoves = []
     # up moves
@@ -150,6 +166,17 @@ def pawnLegalMoves(xCord,yCord,board,color):
     if xCord < 7 and board[yCord+ dest][xCord+1] and low_inverse(color, board[yCord+ dest][xCord+1]):
         availableMoves.append(strC(yCord+ dest, xCord+1))
     return availableMoves    
+
+
+def pawnColorMoves(color):
+    results = []
+    if color:
+        results.append(-1)
+        results.append(6)
+    else:
+        results.append(1)
+        results.append(1)
+    return results
 
 
 def knightLegalMoves (xCord,yCord,board,color):
