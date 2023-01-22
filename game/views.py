@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import JsonResponse
 
 
@@ -22,9 +22,9 @@ def board(request):
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         ["", "", "", "", "", "", "", ""],
-        ["", "", "", "q", "", "", "", ""],
         ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "Q", "", ""],
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
         ["P", "P", "P", "P", "", "P", "P", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
         ]
@@ -39,14 +39,20 @@ def board(request):
         if square:
             return JsonResponse({'moves': getLegalMoves(square, board)})
         if newSquare:
-            request.session['board'] = move_pieces(oldSquare, newSquare, board)
-            return JsonResponse({'data': 'h'})
+            request.session['board'] = movePieces(oldSquare, newSquare, board)
+            request.session['turn'] = not request.session['turn']
+            return JsonResponse({'data': ''})
 
-        return JsonResponse({'data': board})
+        jsResponseInfo = {
+            'board' : board,
+            'turn': turn
+        }
+
+        return JsonResponse(jsResponseInfo)
 
 
 
-def move_pieces(oldPlace,newPlace,board):
+def movePieces(oldPlace,newPlace,board):
     oldCords = int(oldPlace)
     oX = int(oldPlace[1])
     oY = int(oldPlace[0])
@@ -60,8 +66,19 @@ def move_pieces(oldPlace,newPlace,board):
     board[nY][nX] = piece
     return board
 
-
-
+def resetBoard(request):
+    request.session['board'] =[
+    ["r", "n", "b", "q", "k", "b", "n", "r"],
+    ["p", "p", "p", "p", "p", "p", "p", "p"],
+    ["", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", ""],
+    ["P", "P", "P", "P", "", "P", "P", "P"],
+    ["R", "N", "B", "Q", "K", "B", "N", "R"]
+    ]
+    request.session['turn'] = True
+    return redirect('boardView')
 
 def getLegalMoves(square, board):
     cords = int(square)

@@ -1,5 +1,8 @@
 async function createBoard() {
-    board = await getBoard()
+    responseInfo = await getBoard()
+    turn = responseInfo.turn
+
+    board = responseInfo.board
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             let sqColor
@@ -19,7 +22,7 @@ async function createBoard() {
             if (i == 7) {
                 uiLet = String.fromCharCode(97 + j)
             }
-            drawSquares(sqColor, piece, cords, uiNum, uiLet)
+            drawSquares(sqColor, piece, cords, uiNum, uiLet, turn)
         }
     }
 
@@ -27,26 +30,31 @@ async function createBoard() {
 
 createBoard()
 
-function remoevOldSquares(){
+function remoevOldSquares() {
     let board = document.getElementById('board')
     let body = document.body
 
     board.parentNode.removeChild(board)
 
     let newboard = document.createElement('div')
-    newboard.innerHTML = '<div class="chessboard" id="board"></div>' 
+    newboard.innerHTML = '<div class="chessboard" id="board"></div>'
 
-    
+
     body.appendChild(newboard)
 }
 
-function drawSquares(sqColor, piece, cords, uiNum, uiLet) {
+function drawSquares(sqColor, piece, cords, uiNum, uiLet, turn) {
 
     let board = document.getElementById('board')
     let square = document.createElement('div')
     square.classList.add('square', sqColor)
     square.id = cords
     board.appendChild(square)
+
+    let pieceLetter = document.createElement('span')
+    pieceLetter.innerText = piece
+    pieceLetter.classList.add('pieceLetter')
+    square.appendChild(pieceLetter)
 
 
     // Draw the images
@@ -116,24 +124,44 @@ function drawSquares(sqColor, piece, cords, uiNum, uiLet) {
         let selected = document.querySelectorAll('.selected')
         let highlighted = document.querySelectorAll('.highlightAvailable')
 
-        if (this.classList.contains('highlightAvailable')) {
-            console.log(this.id)
-            sendNewPlace(selected[0].id, this.id)
-        }
-        else {
-            selected.forEach(function (sq) {
-                sq.classList.remove('selected')
-            })
-            highlighted.forEach(function (sq) {
-                sq.classList.remove('highlightAvailable')
-            })
-            getMoves(this.id)
-            this.classList.add('selected')
-        }
+        pieceClickHandler(this, selected, highlighted, turn)
+    })
+}
+function pieceClickHandler(selectedPiece, selected, highlighted, turn) {
 
+    if (selectedPiece.classList.contains('highlightAvailable')) {
+        sendNewPlace(selected[0].id, selectedPiece.id)
+    }
+    removeHighlights(selected, highlighted)
+    if (upInverse(turn, selectedPiece.innerText)) {
+        selectedPiece.classList.add('selected')
+        getMoves(selectedPiece.id)
+
+    }
+}
+function removeHighlights(selected, highlighted) {
+    selected.forEach(function (sq) {
+        sq.classList.remove('selected')
+    })
+    highlighted.forEach(function (sq) {
+        sq.classList.remove('highlightAvailable')
     })
 }
 
+function upInverse(switcher, string) {
+    const isUpperCase = (string) => /^[A-Z]*$/.test(string)
+
+    if (switcher == true) {
+        return isUpperCase(string[0])
+    }
+    else if (switcher == false) {
+
+        if (string) {
+            return !isUpperCase(string[0])
+        }
+    }
+
+}
 
 function sendNewPlace(oldID, newID) {
     const formdata = new FormData()
@@ -150,7 +178,6 @@ function sendNewPlace(oldID, newID) {
         data: formdata,
         success: function (res) {
             remoevOldSquares()
-            console.log('removed')
 
             createBoard()
         },
@@ -169,9 +196,11 @@ async function getBoard() {
     let board;
 
     await $.get('/board', function (data) {
-        board = data.data
+        // board = data.board
+        // tune = data.turn
+        reData = data
     })
-    return board
+    return reData
 }
 
 

@@ -50,3 +50,12 @@ body{
     background-color: rgb(137, 43, 226);
     opacity: 0.5;
 }
+
+.pieceLetter{
+    font-size: 0px;
+}
+.resetButton{
+    position: absolute;
+    right: 20%;
+    top:  5%;
+}

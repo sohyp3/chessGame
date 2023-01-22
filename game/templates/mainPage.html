@@ -6,11 +6,13 @@
     <script src="{% static 'js/jq.js'%}"></script>
 
     <title>Chess</title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'chess.png' %}"/>
+
   </head>
   <body>
+    <button class="resetButton"><a href="{% url 'resetBoard' %}">Reset The Board</a> </button>
     <div class="chessboard" id="board"></div>
     {%csrf_token%}
-
     <script src="{% static 'js/app.js'%}"></script>
 
   </body>
