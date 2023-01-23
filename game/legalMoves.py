@@ -8,13 +8,7 @@ def pawnLegalMoves(xCord,yCord,board,color,lFC):
     base = pawnColorMoves(color)[1]
         
     availableMoves = []
-    # up moves
-    if not board[yCord+dest][xCord]:
-        availableMoves.append(strC(yCord+ dest, xCord))
-
-    # first move
-    if yCord == base and not board[yCord+ dest][xCord] and not board[yCord+ (dest*2)][xCord]:
-        availableMoves.append(strC(yCord+(dest*2), xCord))
+    
 
     if lFC:
         # capture diagonal
@@ -23,13 +17,22 @@ def pawnLegalMoves(xCord,yCord,board,color,lFC):
 
         if xCord < 7 :
             availableMoves.append(strC(yCord+ dest, xCord+1))
+    else:
+        # up moves
+        if not board[yCord+dest][xCord]:
+            availableMoves.append(strC(yCord+ dest, xCord))
 
-    # capture diagonal
-    if xCord > 0 and board[yCord+ dest][xCord-1] and low_inverse(color,  board[yCord+ dest][xCord-1]):
-        availableMoves.append(strC(yCord+ dest, xCord-1))
+        # first move
+        if yCord == base and not board[yCord+ dest][xCord] and not board[yCord+ (dest*2)][xCord]:
+            availableMoves.append(strC(yCord+(dest*2), xCord))
 
-    if xCord < 7 and board[yCord+ dest][xCord+1] and low_inverse(color, board[yCord+ dest][xCord+1]):
-        availableMoves.append(strC(yCord+ dest, xCord+1))
+
+        # capture diagonal
+        if xCord > 0 and board[yCord+ dest][xCord-1] and low_inverse(color,  board[yCord+ dest][xCord-1]):
+            availableMoves.append(strC(yCord+ dest, xCord-1))
+
+        if xCord < 7 and board[yCord+ dest][xCord+1] and low_inverse(color, board[yCord+ dest][xCord+1]):
+            availableMoves.append(strC(yCord+ dest, xCord+1))
     return availableMoves    
 
 def knightLegalMoves (xCord,yCord,board,color,lFC):
@@ -225,6 +228,9 @@ def pawnColorMoves(color):
 
 def moveController(square,board,turn):
     isChecked,kingEscapeMoves = isKingOnCheck(board, turn)
+    print(kingEscapeMoves)
+    if kingEscapeMoves == []:
+        kingEscapeMoves = 0
     return getLegalMoves(square, board,kingEscapeMoves,False)
 
 def getLegalMoves(square, board,kingEscape,lookingForChecks):
@@ -259,9 +265,9 @@ def getLegalMoves(square, board,kingEscape,lookingForChecks):
     # King Moves
     if piece =='K' or piece == 'k':
         availableMoves = kingLegalMoves(xCord, yCord, board, piece.isupper(),lookingForChecks)
-        if kingEscape:
-
-            availableMoves = kingEscape
+        if kingEscape == 0:
+            availableMoves = []
+        availableMoves = kingEscape
     return availableMoves
 
 def isKingOnCheck(board,color):
@@ -272,6 +278,7 @@ def isKingOnCheck(board,color):
 
     opponentPiecesCords = []
     kingEscapeMoves =[]
+    print(type(kingEscapeMoves))
     attackerPieces = []
     isChecked = False
     for i in range(8):
@@ -282,16 +289,24 @@ def isKingOnCheck(board,color):
                 kingCords = strC(j,i)
                 kingEscapeMoves = getLegalMoves(kingCords, board,None,False)
 
-  
+    print(kingEscapeMoves)
+
+        
     for piece in opponentPiecesCords:
         for move in getLegalMoves(piece[1], board,None,True):
-            for kingMove in kingEscapeMoves:
-                if move == kingMove:
-                    kingEscapeMoves.remove(kingMove)
+            # print(kingEscapeMoves)
+            if kingEscapeMoves:
+                for kingMove in kingEscapeMoves:
+                    if move == kingMove:
+                        print(f'the piece {piece[0]} at {piece[1]} is attacking the king at {move} ')
+                        kingEscapeMoves.remove(kingMove)
+                
             if move == kingCords:
                 attackerPieces.append(piece)
                 isChecked = True
                 print(f"{piece[0]} at {piece[1]} is attacking {king} ")
+
+    # print(kingEscapeMoves)
 
 
     return isChecked, kingEscapeMoves
