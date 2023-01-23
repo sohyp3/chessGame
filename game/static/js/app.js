@@ -1,16 +1,9 @@
 async function createBoard() {
     responseInfo = await getBoard()
-    turn = responseInfo.turn
-    board = responseInfo.board
+    let board = responseInfo.board
+    window.turn = responseInfo.turn
 
-    let turns = document.getElementById('turns')
-    console.log(turn)
-    if (turn == true){
-        turns.innerText = "White's Turn ⚪"
-    }
-    else{
-        turns.innerHTML = "Black's Turn ⚫"
-    }
+    window.boardVar = board
 
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
@@ -31,7 +24,7 @@ async function createBoard() {
             if (i == 7) {
                 uiLet = String.fromCharCode(97 + j)
             }
-            drawSquares(sqColor, piece, cords, uiNum, uiLet, turn)
+            drawSquares(sqColor, piece, cords, uiNum, uiLet)
         }
     }
 
@@ -53,67 +46,45 @@ function remoevOldSquares() {
     boardContainer.appendChild(newboard)
 }
 
-function drawSquares(sqColor, piece, cords, uiNum, uiLet, turn) {
+function drawImages(piece){
+    const isUpperCase = (string) => /^[A-Z]*$/.test(string)
+    let color
+    if (isUpperCase(piece)){
+        color = 'w'
+    }
+    else{
+        color='b'
+    }
+
+    const piecee = piece.toUpperCase()
+    if (piece){
+        return `images/${color}${piecee}.png`
+    }
+}
+
+
+function drawSquares(sqColor, piece, cords, uiNum, uiLet) {
 
     let board = document.getElementById('board')
     let square = document.createElement('div')
-
-
+    
     square.classList.add('square', sqColor)
     square.id = cords
     board.appendChild(square)
+    
+    let squarePieceName = document.createElement('p')
+    squarePieceName.innerText = piece
+    square.appendChild(squarePieceName)
 
-    let pieceLetter = document.createElement('span')
-    pieceLetter.innerText = piece
-    pieceLetter.classList.add('pieceLetter')
-    square.appendChild(pieceLetter)
 
 
     // Draw the images
-    let img = document.createElement('img')
-
-    switch (piece) {
-        case 'r':
-            img.src = "images/bR.png"
-            break
-        case 'n':
-            img.src = "images/bN.png"
-            break
-        case 'b':
-            img.src = "images/bB.png"
-            break
-        case 'k':
-            img.src = "images/bK.png"
-            break
-        case 'q':
-            img.src = "images/bQ.png"
-            break
-        case 'p':
-            img.src = "images/bP.png"
-            break;
-
-
-        case 'R':
-            img.src = "images/wR.png"
-            break
-        case 'N':
-            img.src = "images/wN.png"
-            break
-        case 'B':
-            img.src = "images/wB.png"
-            break
-        case 'K':
-            img.src = "images/wK.png"
-            break
-        case 'Q':
-            img.src = "images/wQ.png"
-            break
-        case 'P':
-            img.src = "images/wP.png"
-            break;
-
+    if (drawImages(piece)){
+        let img = document.createElement('img')
+        img.src = drawImages(piece)
+        square.appendChild(img)
     }
-    square.appendChild(img)
+
 
     // Draw the board Cordiants
     if (uiNum) {
@@ -135,14 +106,14 @@ function drawSquares(sqColor, piece, cords, uiNum, uiLet, turn) {
     square.addEventListener('click', function () {
         let selected = document.querySelectorAll('.selected')
         let highlighted = document.querySelectorAll('.highlightAvailable')
-
-        pieceClickHandler(this, selected, highlighted, turn)
+        pieceClickHandler(this, selected, highlighted)
     })
 }
-function pieceClickHandler(selectedPiece, selected, highlighted, turn) {
-
+function pieceClickHandler(selectedPiece, selected, highlighted) {
+    turn = window.turn
     if (selectedPiece.classList.contains('highlightAvailable')) {
         sendNewPlace(selected[0].id, selectedPiece.id)
+        // removeOldPieces(selected[0].id, selectedPiece.id)
     }
     removeHighlights(selected, highlighted)
     if (upInverse(turn, selectedPiece.innerText)) {
@@ -175,6 +146,61 @@ function upInverse(switcher, string) {
 
 }
 
+
+function movePieces(differences,newBoard){
+    for (let i = 0; i<differences.length;i++){
+        let square = document.getElementById(differences[i]['c'])
+        let squareText = square.querySelector('p')
+        let SquareImage = square.querySelector('img')
+        let squareNewImage = document.createElement('img')
+
+        if (differences[i]['n'] !== ""){
+            squareNewImage.src = drawImages(differences[i]['n'])
+            square.appendChild(squareNewImage)
+
+            if(SquareImage){
+                square.removeChild(SquareImage)
+            }
+            squareText.innerText = differences[i]['n']
+
+        }
+        else{
+            square.removeChild(SquareImage)
+            squareText.innerText = differences[i]['n']
+        }
+        window.boardVar = newBoard
+    }
+
+    turn = window.turn
+    let turns = document.getElementById('turns')
+    // console.log(turn)
+    if (turn == true){
+        turns.innerText = "White's Turn ⚪"
+    }
+    else{
+        turns.innerHTML = "Black's Turn ⚫"
+    }
+
+
+}
+
+function compareBoard(newBoard){
+    oldBoard = window.boardVar
+    changesArr =[]
+
+    for(let i =0; i< newBoard.length; i++){
+        for (let j = 0; j < newBoard[i].length;j++){
+            if (newBoard[i][j] !== oldBoard[i][j]){
+                changesArr.push({'o':oldBoard[i][j],'n':newBoard[i][j],'c':String(i)+String(j)})
+            }
+
+        }
+    }
+    movePieces(changesArr,newBoard)
+}
+
+
+// Send the new piece places
 function sendNewPlace(oldID, newID) {
     const formdata = new FormData()
     const csrf = document.getElementsByName('csrfmiddlewaretoken')
@@ -189,9 +215,13 @@ function sendNewPlace(oldID, newID) {
         enctype: 'multipart/form-data',
         data: formdata,
         success: function (res) {
-            remoevOldSquares()
+            window.turn = res.turn
+            console.log(turn)
+            compareBoard(res.board)
+            
+            // remoevOldSquares()
 
-            createBoard()
+            // createBoard()
         },
 
         cache: false,

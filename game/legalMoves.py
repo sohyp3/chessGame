@@ -173,3 +173,71 @@ def pawnColorMoves(color):
         results.append(1)
         results.append(1)
     return results
+
+
+
+def getLegalMoves(square, board):
+    cords = int(square)
+    xCord = int(square[1])
+    yCord = int(square[0])
+
+    piece = board[yCord][xCord]
+    availableMoves = []
+
+    # Pawn Moves
+    if piece == 'P' or piece == 'p':
+        availableMoves = pawnLegalMoves(xCord, yCord, board, piece.isupper())
+
+        
+    # Rook Moves
+    if piece == 'R' or piece == 'r':
+        availableMoves =  straightLegalMoves(xCord, yCord, board,piece.isupper())
+
+    # Bishop Moves
+    if piece == 'B' or piece == 'b':
+        availableMoves = diagonalLegalMoves(xCord, yCord, board, piece.isupper())
+
+    # Knight Moves
+    if piece == 'N' or piece == 'n':
+        availableMoves =  knightLegalMoves(xCord, yCord, board,piece.isupper())
+
+    # Queen Moves
+    if piece == 'Q' or piece == 'q':
+        availableMoves = straightLegalMoves(xCord, yCord, board, piece.isupper())
+        availableMoves += diagonalLegalMoves(xCord, yCord, board, piece.isupper())
+
+    # King Moves
+    if piece =='K' or piece == 'k':
+        availableMoves = kingLegalMoves(xCord, yCord, board, piece.isupper())
+
+    return availableMoves
+
+def isKingOnCheck(board,color):
+    if color:
+        king = 'K'
+    else:
+        king = 'k'
+    opponentPiecesCords = []
+    attackerPieces = []
+    for i in range(8):
+        for j in range(8):
+            if low_inverse(color,board[j][i]):
+                opponentPiecesCords.append((board[j][i],strC(j, i)))
+            if board[j][i] == king:
+                kingCords = strC(j,i)
+
+    
+    for piece in opponentPiecesCords:
+        for move in getLegalMoves(piece[1], board):
+            if move == kingCords:
+                attackerPieces.append(piece)
+                print(f"{piece[0]} at {piece[1]} is attacking {king} ")
+
+
+# to get out of check
+# Kill the attacker
+# Run away from the attacker 
+# if its long range get infront of him
+
+def getOutofCheck(attackingPieces,board):
+    pass

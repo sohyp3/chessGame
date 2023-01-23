@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import JsonResponse
 
 from .extraFunctions import is_ajax
-from .legalMoves import kingLegalMoves, straightLegalMoves, diagonalLegalMoves,knightLegalMoves,pawnLegalMoves,pawnColorMoves
+from .legalMoves import  getLegalMoves,kingLegalMoves, straightLegalMoves, diagonalLegalMoves,knightLegalMoves,pawnLegalMoves,pawnColorMoves,isKingOnCheck
 def mainView(request):
     return render(request, 'mainPage.html')
 
@@ -34,30 +34,31 @@ def board(request):
 
     if is_ajax(request):
         square = request.POST.get('sqId')
+
         newSquare = request.POST.get('newSqId')
         oldSquare = request.POST.get('oldSqId')
-        
-        if square:
-            return JsonResponse({'moves': getLegalMoves(square, board)})
-        if newSquare:
-            request.session['board'] = movePieces(oldSquare, newSquare, board)
-            request.session['turn'] = not request.session['turn']
-            return JsonResponse({'data': ''})
 
         jsResponseInfo = {
             'board' : board,
             'turn': turn
         }
+        
+        if square:
+            return JsonResponse({'moves': getLegalMoves(square, board)})
+
+
+        if newSquare:
+            request.session['board'] = movePieces(oldSquare, newSquare, board)
+            request.session['turn'] = not request.session['turn']
+            isKingOnCheck(board, not turn)
+            return JsonResponse(jsResponseInfo)
+
 
         return JsonResponse(jsResponseInfo)
 
 
-
-
-
 def movePieces(oldPlace,newPlace,board):
     # for pawns
-
 
     oldCords = int(oldPlace)
     oX = int(oldPlace[1])
@@ -99,41 +100,4 @@ def resetBoard(request):
     ]
     request.session['turn'] = True
     return redirect('boardView')
-
-def getLegalMoves(square, board):
-    cords = int(square)
-    xCord = int(square[1])
-    yCord = int(square[0])
-
-    piece = board[yCord][xCord]
-    availableMoves = []
-
-    # Pawn Moves
-    if piece == 'P' or piece == 'p':
-        availableMoves = pawnLegalMoves(xCord, yCord, board, piece.isupper())
-
-        
-    # Rook Moves
-    if piece == 'R' or piece == 'r':
-        availableMoves =  straightLegalMoves(xCord, yCord, board,piece.isupper())
-
-    # Bishop Moves
-    if piece == 'B' or piece == 'b':
-        availableMoves = diagonalLegalMoves(xCord, yCord, board, piece.isupper())
-
-    # Knight Moves
-    if piece == 'N' or piece == 'n':
-        availableMoves =  knightLegalMoves(xCord, yCord, board,piece.isupper())
-
-    # Queen Moves
-    if piece == 'Q' or piece == 'q':
-        availableMoves = straightLegalMoves(xCord, yCord, board, piece.isupper())
-        availableMoves += diagonalLegalMoves(xCord, yCord, board, piece.isupper())
-
-    # King Moves
-    if piece =='K' or piece == 'k':
-        availableMoves = kingLegalMoves(xCord, yCord, board, piece.isupper())
-
-    return availableMoves
-
 
