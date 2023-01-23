@@ -1,8 +1,10 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 
 from .extraFunctions import is_ajax
-from .legalMoves import  getLegalMoves,kingLegalMoves, straightLegalMoves, diagonalLegalMoves,knightLegalMoves,pawnLegalMoves,pawnColorMoves,isKingOnCheck
+from .legalMoves import getLegalMoves, kingLegalMoves, straightLegalMoves, diagonalLegalMoves, knightLegalMoves, pawnLegalMoves, pawnColorMoves, isKingOnCheck
+
+
 def mainView(request):
     return render(request, 'mainPage.html')
 
@@ -15,22 +17,20 @@ def board(request):
         request.session['turn'] = True
         turn = request.session['turn']
 
-
     if 'board' in request.session:
         board = request.session['board']
     else:
-        request.session['board'] =[
-        ["r", "n", "b", "q", "k", "b", "n", "r"],
-        ["p", "p", "p", "p", "p", "p", "p", "p"],
-        ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""],
-        ["P", "P", "P", "P", "P", "P", "P", "P"],
-        ["R", "N", "B", "Q", "K", "B", "N", "R"]
+        request.session['board'] = [
+            ["r", "n", "b", "q", "k", "b", "n", "r"],
+            ["p", "p", "p", "p", "p", "p", "p", "p"],
+            ["", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", ""],
+            ["P", "P", "P", "P", "P", "P", "P", "P"],
+            ["R", "N", "B", "Q", "K", "B", "N", "R"]
         ]
         board = request.session['board']
-
 
     if is_ajax(request):
         square = request.POST.get('sqId')
@@ -39,25 +39,28 @@ def board(request):
         oldSquare = request.POST.get('oldSqId')
 
         jsResponseInfo = {
-            'board' : board,
+            'board': board,
             'turn': turn
         }
-        
+
         if square:
             return JsonResponse({'moves': getLegalMoves(square, board)})
-
 
         if newSquare:
             request.session['board'] = movePieces(oldSquare, newSquare, board)
             request.session['turn'] = not request.session['turn']
-            isKingOnCheck(board, not turn)
-            return JsonResponse(jsResponseInfo)
-
+            turn = request.session['turn']
+            isKingOnCheck(board, turn)
+            newRs= {
+                'board':board,
+                'turn':turn
+            }
+            return JsonResponse(newRs)
 
         return JsonResponse(jsResponseInfo)
 
 
-def movePieces(oldPlace,newPlace,board):
+def movePieces(oldPlace, newPlace, board):
     # for pawns
 
     oldCords = int(oldPlace)
@@ -71,7 +74,6 @@ def movePieces(oldPlace,newPlace,board):
     nX = int(newPlace[1])
     nY = int(newPlace[0])
 
-
     # Promotion
     dest = pawnColorMoves(color)[0]
     base = pawnColorMoves(color)[1]
@@ -82,22 +84,21 @@ def movePieces(oldPlace,newPlace,board):
         else:
             piece = 'q'
 
-
     board[oY][oX] = ""
     board[nY][nX] = piece
     return board
 
+
 def resetBoard(request):
-    request.session['board'] =[
-    ["r", "n", "b", "q", "k", "b", "n", "r"],
-    ["p", "p", "p", "p", "p", "p", "p", "p"],
-    ["", "", "", "", "", "", "", ""],
-    ["", "", "", "", "", "", "", ""],
-    ["", "", "", "", "", "", "", ""],
-    ["", "", "", "", "", "", "", ""],
-    ["P", "P", "P", "P", "P", "P", "P", "P"],
-    ["R", "N", "B", "Q", "K", "B", "N", "R"]
+    request.session['board'] = [
+        ["r", "n", "b", "q", "k", "b", "n", "r"],
+        ["p", "p", "p", "p", "p", "p", "p", "p"],
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
+        ["P", "P", "P", "P", "P", "P", "P", "P"],
+        ["R", "N", "B", "Q", "K", "B", "N", "R"]
     ]
     request.session['turn'] = True
     return redirect('boardView')
-
