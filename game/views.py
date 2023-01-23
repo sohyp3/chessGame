@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 
 from .extraFunctions import is_ajax
-from .legalMoves import getLegalMoves, kingLegalMoves, straightLegalMoves, diagonalLegalMoves, knightLegalMoves, pawnLegalMoves, pawnColorMoves, isKingOnCheck
+from .legalMoves import moveController ,getLegalMoves, kingLegalMoves, straightLegalMoves, diagonalLegalMoves, knightLegalMoves, pawnLegalMoves, pawnColorMoves, isKingOnCheck
 
 
 def mainView(request):
@@ -44,13 +44,13 @@ def board(request):
         }
 
         if square:
-            return JsonResponse({'moves': getLegalMoves(square, board)})
+            return JsonResponse({'moves': moveController(square, board, turn)})
 
         if newSquare:
             request.session['board'] = movePieces(oldSquare, newSquare, board)
             request.session['turn'] = not request.session['turn']
             turn = request.session['turn']
-            isKingOnCheck(board, turn)
+            # isKingOnCheck(board, turn) 
             newRs= {
                 'board':board,
                 'turn':turn
@@ -91,14 +91,14 @@ def movePieces(oldPlace, newPlace, board):
 
 def resetBoard(request):
     request.session['board'] = [
-        ["r", "n", "b", "q", "k", "b", "n", "r"],
+        ["r", "n", "b", "q", "", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         ["", "", "", "", "", "", "", ""],
         ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "k", "", "N", ""],
+        ["", "K", "", "", "", "", "", ""],
         ["P", "P", "P", "P", "P", "P", "P", "P"],
-        ["R", "N", "B", "Q", "K", "B", "N", "R"]
+        ["R", "N", "B", "Q", "", "B", "N", "R"]
     ]
     request.session['turn'] = True
     return redirect('boardView')

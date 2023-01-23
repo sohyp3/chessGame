@@ -1,6 +1,5 @@
 body{
     background-color: #333;
-
 }
 
 .chessboard {
@@ -73,3 +72,9 @@ body{
 .turns{
     color: white;
 }
+
+/* img{
+    user-select: none;
+    pointer-events: none;
+} */
+

@@ -4,7 +4,15 @@ async function createBoard() {
 
     window.turn = responseInfo.turn
     
-    console.log(window.turn)
+    turn = window.turn
+    
+    let turns = document.getElementById('turns')
+    if (turn == true) {
+        turns.innerText = "White's Turn ⚪"
+    }
+    else {
+        turns.innerHTML = "Black's Turn ⚫"
+    }
 
     window.boardVar = board
 
@@ -87,7 +95,6 @@ function sendNewPlace(oldID, newID) {
         data: formdata,
         success: function (res) {
             window.turn = res.turn
-            console.log(turn)
             compareBoard(res.board)
         },
 
@@ -220,7 +227,6 @@ function movePieces(differences, newBoard) {
 
     turn = window.turn
     let turns = document.getElementById('turns')
-    console.log(turn)
     if (turn == true) {
         turns.innerText = "White's Turn ⚪"
     }
