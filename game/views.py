@@ -91,14 +91,14 @@ def movePieces(oldPlace, newPlace, board):
 
 def resetBoard(request):
     request.session['board'] = [
-        ["r", "n", "b", "q", "", "b", "n", "r"],
+        ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         ["", "", "", "", "", "", "", ""],
         ["", "", "", "", "", "", "", ""],
-        ["", "", "", "", "k", "", "N", ""],
-        ["", "K", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
         ["P", "P", "P", "P", "P", "P", "P", "P"],
-        ["R", "N", "B", "Q", "", "B", "N", "R"]
+        ["R", "N", "B", "Q", "K", "B", "N", "R"]
     ]
     request.session['turn'] = True
     return redirect('boardView')

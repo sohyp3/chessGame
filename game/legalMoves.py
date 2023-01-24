@@ -156,7 +156,10 @@ def straightLegalMoves(xCord,yCord,board,color,lFC):
     for i in range(yCord+1, 8):
         if lFC:
             if up_inverse(color,board[i][xCord]):
+                # print(f"{color} long boi ttacking dis {strC(yCord, i)} -- {board[yCord][i]}")
+
                 availableMoves.append(strC(i, xCord))
+                # print(availableMoves)
                 break
         if up_inverse(color,board[i][xCord]):
             break
@@ -185,6 +188,8 @@ def straightLegalMoves(xCord,yCord,board,color,lFC):
         if lFC:
             if up_inverse(color,board[yCord][i]):
                 availableMoves.append(strC(yCord, i))
+
+                # print(f"{color} long boi ttacking dis {strC(yCord, i)} -- {board[yCord][i]}")
                 break
 
         if up_inverse(color,board[yCord][i]):
@@ -228,7 +233,7 @@ def pawnColorMoves(color):
 
 def moveController(square,board,turn):
     isChecked,kingEscapeMoves = isKingOnCheck(board, turn)
-    print(kingEscapeMoves)
+    # print(kingEscapeMoves)
     if kingEscapeMoves == []:
         kingEscapeMoves = 0
     return getLegalMoves(square, board,kingEscapeMoves,False)
@@ -267,7 +272,8 @@ def getLegalMoves(square, board,kingEscape,lookingForChecks):
         availableMoves = kingLegalMoves(xCord, yCord, board, piece.isupper(),lookingForChecks)
         if kingEscape == 0:
             availableMoves = []
-        availableMoves = kingEscape
+        if kingEscape:
+            availableMoves = kingEscape
     return availableMoves
 
 def isKingOnCheck(board,color):
@@ -278,7 +284,6 @@ def isKingOnCheck(board,color):
 
     opponentPiecesCords = []
     kingEscapeMoves =[]
-    print(type(kingEscapeMoves))
     attackerPieces = []
     isChecked = False
     for i in range(8):
@@ -289,16 +294,17 @@ def isKingOnCheck(board,color):
                 kingCords = strC(j,i)
                 kingEscapeMoves = getLegalMoves(kingCords, board,None,False)
 
-    print(kingEscapeMoves)
 
-        
+    
     for piece in opponentPiecesCords:
+        if not getLegalMoves(piece[1], board,None,True):
+            # print(piece[1])
+            continue
         for move in getLegalMoves(piece[1], board,None,True):
-            # print(kingEscapeMoves)
             if kingEscapeMoves:
                 for kingMove in kingEscapeMoves:
                     if move == kingMove:
-                        print(f'the piece {piece[0]} at {piece[1]} is attacking the king at {move} ')
+                        # print(f'the piece {piece[0]} at {piece[1]} is attacking the king at {move} ')
                         kingEscapeMoves.remove(kingMove)
                 
             if move == kingCords:
@@ -306,7 +312,6 @@ def isKingOnCheck(board,color):
                 isChecked = True
                 print(f"{piece[0]} at {piece[1]} is attacking {king} ")
 
-    # print(kingEscapeMoves)
 
 
     return isChecked, kingEscapeMoves
