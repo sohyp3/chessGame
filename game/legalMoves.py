@@ -232,13 +232,17 @@ def pawnColorMoves(color):
 
 
 def moveController(square,board,turn):
-    isChecked,kingEscapeMoves = isKingOnCheck(board, turn)
+    isChecked,kingEscapeMoves,kingCords = isKingOnCheck(board, turn)
     # print(kingEscapeMoves)
+    pinned = kingSight(turn, board,kingCords,square)
     if kingEscapeMoves == []:
         kingEscapeMoves = 0
-    return getLegalMoves(square, board,kingEscapeMoves,False)
+    
+    if pinned == []:
+        pinned = 0
+    return getLegalMoves(square, board,kingEscapeMoves,False,pinned)
 
-def getLegalMoves(square, board,kingEscape,lookingForChecks):
+def getLegalMoves(square, board,kingEscape,lookingForChecks,notPinnedMoves):
     cords = int(square)
     xCord = int(square[1])
     yCord = int(square[0])
@@ -249,7 +253,11 @@ def getLegalMoves(square, board,kingEscape,lookingForChecks):
     # Pawn Moves
     if piece == 'P' or piece == 'p':
         availableMoves = pawnLegalMoves(xCord, yCord, board, piece.isupper(),lookingForChecks)
-
+        if notPinnedMoves:
+            availableMoves = notPinnedMoves
+        
+        if notPinnedMoves == 0:
+            availableMoves = []
     # Rook Moves
     if piece == 'R' or piece == 'r':
         availableMoves =  straightLegalMoves(xCord, yCord, board,piece.isupper(),lookingForChecks)
@@ -276,6 +284,63 @@ def getLegalMoves(square, board,kingEscape,lookingForChecks):
             availableMoves = kingEscape
     return availableMoves
 
+
+
+def pieceName(color):
+    if color:
+        queen = 'Q'
+        rook = 'R'
+        bishop = 'P'
+    else:
+        queen = 'q'
+        rook = 'r'
+        bishop = 'b' 
+    return queen,rook,bishop
+    
+
+def kingSight(color,board,kingCords,square):
+    if color:
+        king = 'K'
+
+    else:
+        king = 'k'
+
+    xCord = int(kingCords[1])
+    yCord = int(kingCords[0])
+
+    xSquare = int(square[1])
+    ySquare = int(square[0])
+
+    queen,rook,bishop = pieceName(not color)
+    
+    # Check if its on the same y axisis (top)
+    
+    pieceBetween = False
+    friendlyPieceTop = False
+    newLegalMoves = []
+    if xCord == xSquare:
+        for i in range(yCord-1,ySquare,-1):
+            if board[i][xCord]:
+                pieceBetween = True
+                break
+        
+        if not pieceBetween:
+            for i in range(ySquare-1,-1,-1):
+                if up_inverse(color, board[i][xCord]):
+                    friendlyPieceTop = True
+                    break
+                if low_inverse(color, board[i][xCord]):
+                    if board[i][xCord] == queen or board[i][xCord] == rook :
+                        currentLegalMoves = getLegalMoves(kingCords, board,None,False,None)
+                        
+                        #  to remove any move that goes to other y axis
+                        for move in currentLegalMoves:
+                            print(xCord)
+                            if move[0] == str(yCord):
+                                print('hi')
+                                newLegalMoves.append(move)
+
+    return newLegalMoves   
 def isKingOnCheck(board,color):
     if color:
         king = 'K'
@@ -292,15 +357,15 @@ def isKingOnCheck(board,color):
                 opponentPiecesCords.append((board[j][i],strC(j, i)))
             if board[j][i] == king:
                 kingCords = strC(j,i)
-                kingEscapeMoves = getLegalMoves(kingCords, board,None,False)
+                kingEscapeMoves = getLegalMoves(kingCords, board,None,False,None)
 
 
     
     for piece in opponentPiecesCords:
-        if not getLegalMoves(piece[1], board,None,True):
+        if not getLegalMoves(piece[1], board,None,True,None):
             # print(piece[1])
             continue
-        for move in getLegalMoves(piece[1], board,None,True):
+        for move in getLegalMoves(piece[1], board,None,True,None):
             if kingEscapeMoves:
                 for kingMove in kingEscapeMoves:
                     if move == kingMove:
@@ -314,7 +379,7 @@ def isKingOnCheck(board,color):
 
 
 
-    return isChecked, kingEscapeMoves
+    return isChecked, kingEscapeMoves,kingCords
     
 
             
