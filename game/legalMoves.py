@@ -392,10 +392,53 @@ def kingSight(color,board,kingCords,square):
                     else:
                         break
                     
-    # # Right
-    # if yCord == ySquare:
-    #     for i in range(xCord+1,8):
+    # Right
+    if yCord == ySquare and xCord < xSquare:
+        for i in range(xCord+1,xSquare):
+            if board[yCord][i]:
+                pieceBetween = True
+                break
+        if not pieceBetween:
+            for i in range(xSquare+1,8):
+                if up_inverse(color, board[yCord][i]):
+                    friendlyPieceTop = True
+                    break
 
+                if low_inverse(color, board[yCord][i]):
+                    if board[yCord][i] == queen or board[yCord][i] == rook :
+                        isPinned = True
+
+                        currentLegalMoves = getLegalMoves(square, board,None,False,None)
+                        #  to remove any move that goes to other x axis
+                        for move in currentLegalMoves:
+                            if move[0] == str(yCord):
+                                newLegalMoves.append(move)
+                    else:
+                        break
+
+    # left
+    if yCord == ySquare and xCord > xSquare:
+        for i in range(xCord-1,xSquare,-1):
+            if board[yCord][i]:
+                pieceBetween = True
+                break
+        if not pieceBetween:
+            for i in range(xSquare-1,-1,-1):
+                if up_inverse(color, board[yCord][i]):
+                    friendlyPieceTop = True
+                    break
+
+                if low_inverse(color, board[yCord][i]):
+                    if board[yCord][i] == queen or board[yCord][i] == rook :
+                        isPinned = True
+
+                        currentLegalMoves = getLegalMoves(square, board,None,False,None)
+                        #  to remove any move that goes to other x axis
+                        for move in currentLegalMoves:
+                            if move[0] == str(yCord):
+                                newLegalMoves.append(move)
+                    else:
+                        break
 
 
         
