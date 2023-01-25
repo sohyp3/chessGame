@@ -234,13 +234,13 @@ def pawnColorMoves(color):
 def moveController(square,board,turn):
     isChecked,kingEscapeMoves,kingCords = isKingOnCheck(board, turn)
     # print(kingEscapeMoves)
-    pinned = kingSight(turn, board,kingCords,square)
+    pinLegalMove, pin = kingSight(turn, board,kingCords,square)
     if kingEscapeMoves == []:
         kingEscapeMoves = 0
     
-    if pinned == []:
-        pinned = 0
-    return getLegalMoves(square, board,kingEscapeMoves,False,pinned)
+    if pinLegalMove == [] and pin:
+        pinLegalMove = 0
+    return getLegalMoves(square, board,kingEscapeMoves,False,pinLegalMove)
 
 def getLegalMoves(square, board,kingEscape,lookingForChecks,notPinnedMoves):
     cords = int(square)
@@ -258,22 +258,44 @@ def getLegalMoves(square, board,kingEscape,lookingForChecks,notPinnedMoves):
         
         if notPinnedMoves == 0:
             availableMoves = []
+
     # Rook Moves
     if piece == 'R' or piece == 'r':
         availableMoves =  straightLegalMoves(xCord, yCord, board,piece.isupper(),lookingForChecks)
+        
+        if notPinnedMoves:
+            availableMoves = notPinnedMoves
+        
+        if notPinnedMoves == 0:
+            availableMoves = []
 
     # Bishop Moves
     if piece == 'B' or piece == 'b':
         availableMoves = diagonalLegalMoves(xCord, yCord, board, piece.isupper(),lookingForChecks)
-
+        if notPinnedMoves:
+            availableMoves = notPinnedMoves
+        
+        if notPinnedMoves == 0:
+            availableMoves = []        
     # Knight Moves
     if piece == 'N' or piece == 'n':
         availableMoves =  knightLegalMoves(xCord, yCord, board,piece.isupper(),lookingForChecks)
+        if notPinnedMoves:
+            availableMoves = notPinnedMoves
+        
+        if notPinnedMoves == 0:
+            availableMoves = []
 
     # Queen Moves
     if piece == 'Q' or piece == 'q':
         availableMoves = straightLegalMoves(xCord, yCord, board, piece.isupper(),lookingForChecks)
         availableMoves += diagonalLegalMoves(xCord, yCord, board, piece.isupper(),lookingForChecks)
+        
+        if notPinnedMoves:
+            availableMoves = notPinnedMoves
+        
+        if notPinnedMoves == 0:
+            availableMoves = []
 
     # King Moves
     if piece =='K' or piece == 'k':
@@ -313,15 +335,19 @@ def kingSight(color,board,kingCords,square):
 
     queen,rook,bishop = pieceName(not color)
     
-    # Check if its on the same y axisis (top)
-    
+    # Check if its on the same y axisis 
+
     pieceBetween = False
     friendlyPieceTop = False
+    isPinned = False
     newLegalMoves = []
-    if xCord == xSquare:
+    # (top)   
+    if xCord == xSquare and yCord > ySquare:     
+        print(ySquare)
         for i in range(yCord-1,ySquare,-1):
             if board[i][xCord]:
                 pieceBetween = True
+                print('hi') 
                 break
         
         if not pieceBetween:
@@ -331,16 +357,50 @@ def kingSight(color,board,kingCords,square):
                     break
                 if low_inverse(color, board[i][xCord]):
                     if board[i][xCord] == queen or board[i][xCord] == rook :
-                        currentLegalMoves = getLegalMoves(kingCords, board,None,False,None)
-                        
+                        isPinned = True
+
+                        currentLegalMoves = getLegalMoves(square, board,None,False,None)
                         #  to remove any move that goes to other y axis
                         for move in currentLegalMoves:
-                            print(xCord)
-                            if move[0] == str(yCord):
-                                print('hi')
+                            if move[1] == str(xCord):
                                 newLegalMoves.append(move)
+                    else:
+                        break
 
-    return newLegalMoves   
+
+    # Bottom
+    if xCord == xSquare and yCord < ySquare:
+        for i in range(yCord+1,ySquare):
+            if board[i][xCord]:
+                pieceBetween = True
+                break
+        if not pieceBetween:
+            for i in range(ySquare+1,8):
+                if up_inverse(color, board[i][xCord]):
+                    friendlyPieceTop = True
+                    break
+
+                if low_inverse(color, board[i][xCord]):
+                    if board[i][xCord] == queen or board[i][xCord] == rook :
+                        isPinned = True
+
+                        currentLegalMoves = getLegalMoves(square, board,None,False,None)
+                        #  to remove any move that goes to other y axis
+                        for move in currentLegalMoves:
+                            if move[1] == str(xCord):
+                                newLegalMoves.append(move)
+                    else:
+                        break
+                    
+    # # Right
+    # if yCord == ySquare:
+    #     for i in range(xCord+1,8):
+
+
+
+        
+        
+    return newLegalMoves, isPinned
 def isKingOnCheck(board,color):
     if color:
         king = 'K'
