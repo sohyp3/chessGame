@@ -451,9 +451,6 @@ def kingSight(color,board,kingCords,square):
 
 
     if abs(yCord - ySquare) == abs(xCord - xSquare):
-        # print(yCord,xCord)
-        # print(ySquare,xSquare)
-
         if yCord > ySquare and xCord < xSquare:
             i = xCord +1
             j = yCord -1
@@ -464,7 +461,6 @@ def kingSight(color,board,kingCords,square):
             while i < n-1 and j >= 0:
                 if board[j][i]:
                     pieceBetween = True
-                    print('hereee')
                     break
 
                 i +=1
@@ -472,16 +468,12 @@ def kingSight(color,board,kingCords,square):
 
             if not pieceBetween:
                 while n < 8 and m > 0:
-                    print(board[m][n])  
-                    print(m,n)
-
                     if up_inverse(color, board[m][n]):
                         friendlyPieceTop = True
                         break
                     if low_inverse(color, board[m][n]):
                         if board[m][n] == queen or board[m][n] == bishop:
                             isPinned = True
-                            print('here')
                             currentLegalMoves = getLegalMoves(square, board,None,False,None)
 
                             for move in currentLegalMoves:
@@ -491,15 +483,95 @@ def kingSight(color,board,kingCords,square):
                     m -=1
 
         elif yCord > ySquare and xCord> xSquare:
-            print('top left')
+            i = xCord -1
+            j = yCord -1
+
+            n = xSquare -1
+            m = ySquare -1
+
+            while i > n+1 and j > m:
+                if board[j][i]:
+                    pieceBetween = True
+                    break
+
+                i -=1
+                j -=1
+
+            if not pieceBetween:
+                while n >=0  and m >= 0:
+                    if up_inverse(color, board[m][n]):
+                        friendlyPieceTop = True
+                        break
+                    if low_inverse(color, board[m][n]):
+                        print('here')   
+                        if board[m][n] == queen or board[m][n] == bishop:
+                            isPinned = True
+                            currentLegalMoves = getLegalMoves(square, board,None,False,None)
+
+                            for move in currentLegalMoves:
+                                if abs(int(move[0])-yCord) == abs(int(move[1])-xCord) and yCord > int(move[0]) and xCord > int(move[1]):
+                                    newLegalMoves.append(move)               
+                    n -=1
+                    m -=1
 
         elif yCord < ySquare and xCord < xSquare:
-            print('bottom right')
-        
+            i = xCord +1
+            j = yCord +1
+
+            n = xSquare +1
+            m = ySquare +1
+            while i < n-1 and j < m-1:
+                if board[j][i]:
+                    pieceBetween = True
+                    break
+
+                i +=1
+                j +=1
+
+            if not pieceBetween:
+                while n < 8 and m < 8:
+                    if up_inverse(color, board[m][n]):
+                        friendlyPieceTop = True
+                        break
+                    if low_inverse(color, board[m][n]):
+                        if board[m][n] == queen or board[m][n] == bishop:
+                            isPinned = True
+                            currentLegalMoves = getLegalMoves(square, board,None,False,None)
+
+                            for move in currentLegalMoves:
+                                if abs(int(move[0])-yCord) == abs(int(move[1])-xCord) and yCord < int(move[0]) and xCord < int(move[1]):
+                                    newLegalMoves.append(move)               
+                    n +=1
+                    m +=1        
         elif yCord < ySquare and xCord > xSquare:
-            print(yCord,xCord)
-            print(ySquare,xSquare)
-            print('bottom left')
+            i = xCord -1
+            j = yCord +1
+
+            n = xSquare -1
+            m = ySquare +1
+            while i > n+1 and j < m-1:
+                if board[j][i]:
+                    pieceBetween = True
+                    break
+
+                i -=1
+                j +=1
+
+            if not pieceBetween:
+                while n >= 0 and m < 8:
+                    if up_inverse(color, board[m][n]):
+                        friendlyPieceTop = True
+                        break
+                    if low_inverse(color, board[m][n]):
+                        if board[m][n] == queen or board[m][n] == bishop:
+                            isPinned = True
+                            currentLegalMoves = getLegalMoves(square, board,None,False,None)
+
+                            for move in currentLegalMoves:
+                                if abs(int(move[0])-yCord) == abs(int(move[1])-xCord) and yCord < int(move[0]) and xCord > int(move[1]):
+                                    newLegalMoves.append(move)               
+                    n -=1
+                    m +=1    
 
 
         
