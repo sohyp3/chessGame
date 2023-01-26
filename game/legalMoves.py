@@ -232,17 +232,22 @@ def pawnColorMoves(color):
 
 
 def moveController(square,board,turn):
-    isChecked,kingEscapeMoves,kingCords = isKingOnCheck(board, turn)
-    # print(kingEscapeMoves)
+    isChecked,kingEscapeMoves,kingCords,attackers = isKingOnCheck(board, turn)
     pinLegalMove, pin = kingSight(turn, board,kingCords,square)
+
+    if isChecked:
+        checkEscape = getOutofCheck(square, attackers, board,kingCords)
+        if checkEscape == []:
+            checkEscape = 0
+    checkEscape= []
     if kingEscapeMoves == []:
         kingEscapeMoves = 0
     
     if pinLegalMove == [] and pin:
         pinLegalMove = 0
-    return getLegalMoves(square, board,kingEscapeMoves,False,pinLegalMove)
+    return getLegalMoves(square, board,kingEscapeMoves,False,pinLegalMove,checkEscape)
 
-def getLegalMoves(square, board,kingEscape,lookingForChecks,notPinnedMoves):
+def getLegalMoves(square, board,kingEscape,lookingForChecks,notPinnedMoves,checkEscapeMoves):
     cords = int(square)
     xCord = int(square[1])
     yCord = int(square[0])
@@ -258,6 +263,11 @@ def getLegalMoves(square, board,kingEscape,lookingForChecks,notPinnedMoves):
         
         if notPinnedMoves == 0:
             availableMoves = []
+        
+        if checkEscapeMoves:
+            availableMoves = checkEscapeMoves
+        if checkEscapeMoves == 0:
+            availableMoves = []
 
     # Rook Moves
     if piece == 'R' or piece == 'r':
@@ -268,6 +278,11 @@ def getLegalMoves(square, board,kingEscape,lookingForChecks,notPinnedMoves):
         
         if notPinnedMoves == 0:
             availableMoves = []
+        
+        if checkEscapeMoves:    
+            availableMoves = checkEscapeMoves
+        if checkEscapeMoves == 0:
+            availableMoves = []
 
     # Bishop Moves
     if piece == 'B' or piece == 'b':
@@ -276,7 +291,14 @@ def getLegalMoves(square, board,kingEscape,lookingForChecks,notPinnedMoves):
             availableMoves = notPinnedMoves
         
         if notPinnedMoves == 0:
-            availableMoves = []        
+            availableMoves = []     
+
+        if checkEscapeMoves:
+            availableMoves = checkEscapeMoves   
+
+        if checkEscapeMoves == 0:
+            availableMoves = []
+
     # Knight Moves
     if piece == 'N' or piece == 'n':
         availableMoves =  knightLegalMoves(xCord, yCord, board,piece.isupper(),lookingForChecks)
@@ -286,6 +308,11 @@ def getLegalMoves(square, board,kingEscape,lookingForChecks,notPinnedMoves):
         if notPinnedMoves == 0:
             availableMoves = []
 
+        if checkEscapeMoves:
+            availableMoves = checkEscapeMoves
+
+        if checkEscapeMoves == 0:
+            availableMoves = []
     # Queen Moves
     if piece == 'Q' or piece == 'q':
         availableMoves = straightLegalMoves(xCord, yCord, board, piece.isupper(),lookingForChecks)
@@ -296,6 +323,11 @@ def getLegalMoves(square, board,kingEscape,lookingForChecks,notPinnedMoves):
         
         if notPinnedMoves == 0:
             availableMoves = []
+            
+        if checkEscapeMoves:
+            availableMoves = checkEscapeMoves    
+        if checkEscapeMoves == 0:
+            availableMoves = []        
 
     # King Moves
     if piece =='K' or piece == 'k':
@@ -359,7 +391,7 @@ def kingSight(color,board,kingCords,square):
                     if board[i][xCord] == queen or board[i][xCord] == rook :
                         isPinned = True
 
-                        currentLegalMoves = getLegalMoves(square, board,None,False,None)
+                        currentLegalMoves = getLegalMoves(square, board,None,False,None,None)
                         #  to remove any move that goes to other y axis
                         for move in currentLegalMoves:
                             if move[1] == str(xCord):
@@ -384,7 +416,7 @@ def kingSight(color,board,kingCords,square):
                     if board[i][xCord] == queen or board[i][xCord] == rook :
                         isPinned = True
 
-                        currentLegalMoves = getLegalMoves(square, board,None,False,None)
+                        currentLegalMoves = getLegalMoves(square, board,None,False,None,None)
                         #  to remove any move that goes to other y axis
                         for move in currentLegalMoves:
                             if move[1] == str(xCord):
@@ -408,7 +440,7 @@ def kingSight(color,board,kingCords,square):
                     if board[yCord][i] == queen or board[yCord][i] == rook :
                         isPinned = True
 
-                        currentLegalMoves = getLegalMoves(square, board,None,False,None)
+                        currentLegalMoves = getLegalMoves(square, board,None,False,None,None)
                         #  to remove any move that goes to other x axis
                         for move in currentLegalMoves:
                             if move[0] == str(yCord):
@@ -432,7 +464,7 @@ def kingSight(color,board,kingCords,square):
                     if board[yCord][i] == queen or board[yCord][i] == rook :
                         isPinned = True
 
-                        currentLegalMoves = getLegalMoves(square, board,None,False,None)
+                        currentLegalMoves = getLegalMoves(square, board,None,False,None,None)
                         #  to remove any move that goes to other x axis
                         for move in currentLegalMoves:
                             if move[0] == str(yCord):
@@ -474,7 +506,7 @@ def kingSight(color,board,kingCords,square):
                     if low_inverse(color, board[m][n]):
                         if board[m][n] == queen or board[m][n] == bishop:
                             isPinned = True
-                            currentLegalMoves = getLegalMoves(square, board,None,False,None)
+                            currentLegalMoves = getLegalMoves(square, board,None,False,None,None)
 
                             for move in currentLegalMoves:
                                 if abs(int(move[0])-yCord) == abs(int(move[1])-xCord) and yCord > int(move[0]) and xCord < int(move[1]):
@@ -506,7 +538,7 @@ def kingSight(color,board,kingCords,square):
                         print('here')   
                         if board[m][n] == queen or board[m][n] == bishop:
                             isPinned = True
-                            currentLegalMoves = getLegalMoves(square, board,None,False,None)
+                            currentLegalMoves = getLegalMoves(square, board,None,False,None,None)
 
                             for move in currentLegalMoves:
                                 if abs(int(move[0])-yCord) == abs(int(move[1])-xCord) and yCord > int(move[0]) and xCord > int(move[1]):
@@ -536,7 +568,7 @@ def kingSight(color,board,kingCords,square):
                     if low_inverse(color, board[m][n]):
                         if board[m][n] == queen or board[m][n] == bishop:
                             isPinned = True
-                            currentLegalMoves = getLegalMoves(square, board,None,False,None)
+                            currentLegalMoves = getLegalMoves(square, board,None,False,None,None)
 
                             for move in currentLegalMoves:
                                 if abs(int(move[0])-yCord) == abs(int(move[1])-xCord) and yCord < int(move[0]) and xCord < int(move[1]):
@@ -565,7 +597,7 @@ def kingSight(color,board,kingCords,square):
                     if low_inverse(color, board[m][n]):
                         if board[m][n] == queen or board[m][n] == bishop:
                             isPinned = True
-                            currentLegalMoves = getLegalMoves(square, board,None,False,None)
+                            currentLegalMoves = getLegalMoves(square, board,None,False,None,None)
 
                             for move in currentLegalMoves:
                                 if abs(int(move[0])-yCord) == abs(int(move[1])-xCord) and yCord < int(move[0]) and xCord > int(move[1]):
@@ -592,15 +624,15 @@ def isKingOnCheck(board,color):
                 opponentPiecesCords.append((board[j][i],strC(j, i)))
             if board[j][i] == king:
                 kingCords = strC(j,i)
-                kingEscapeMoves = getLegalMoves(kingCords, board,None,False,None)
+                kingEscapeMoves = getLegalMoves(kingCords, board,None,False,None,None)
 
 
     
     for piece in opponentPiecesCords:
-        if not getLegalMoves(piece[1], board,None,True,None):
+        if not getLegalMoves(piece[1], board,None,True,None,None):
             # print(piece[1])
             continue
-        for move in getLegalMoves(piece[1], board,None,True,None):
+        for move in getLegalMoves(piece[1], board,None,True,None,None):
             if kingEscapeMoves:
                 for kingMove in kingEscapeMoves:
                     if move == kingMove:
@@ -614,7 +646,7 @@ def isKingOnCheck(board,color):
 
 
 
-    return isChecked, kingEscapeMoves,kingCords
+    return isChecked, kingEscapeMoves,kingCords,attackerPieces
     
 
             
@@ -626,5 +658,39 @@ def isKingOnCheck(board,color):
 # Run away from the attacker 
 # if its long range get infront of him
 
-def getOutofCheck(attackingPieces,board):
-    pass
+def getOutofCheck(piece,attackingPieces,board,kingCords):
+    xCord = int(piece[1])
+    yCord = int(piece[0])
+    availabeMoves = []
+    for attacker in attackingPieces:
+        if board[yCord][xCord].lower() == 'k':
+            continue
+        else:
+            for move in getLegalMoves(piece, board, None, False, None,None):
+                
+                if move == attacker[1]:
+                    availabeMoves.append(move)
+                # Check on the Right
+                if int(attacker[1][0]) == int(kingCords[0]) and int(attacker[1][1]) > int(kingCords[1]):
+                    if int(move[0]) == int(kingCords[0]) and int(attacker[1][1]) > int(move[1]) > int(kingCords[1]):
+                        availabeMoves.append(move)
+
+                #  Check on the left
+                if int(attacker[1][0]) == int(kingCords[0]) and int(attacker[1][1]) < int(kingCords[1]):
+                    if int(move[0]) == int(kingCords[0]) and int(attacker[1][1]) < int(move[1]) < int(kingCords[1]):
+                        availabeMoves.append(move)
+
+                
+                #  Check on the top
+                if int(attacker[1][1]) == int(kingCords[1]) and int(attacker[1][0]) < int(kingCords[0]):
+                    if int(move[1]) == int(kingCords[1]) and int(attacker[1][0]) < int(move[0]) < int(kingCords[0]):
+                        availabeMoves.append(move)
+
+
+                #  Check on the bottom
+                if int(attacker[1][1]) == int(kingCords[1]) and int(attacker[1][0]) > int(kingCords[0]):
+                    if int(move[1]) == int(kingCords[1]) and int(attacker[1][0]) > int(move[0]) > int(kingCords[0]):
+                        availabeMoves.append(move)
+
+                                
+    return availabeMoves 
