@@ -62,9 +62,14 @@ def diagonalLegalMoves(xCord,yCord,board,color,lFC):
     j = yCord-1
     while i >= 0 and j >= 0:
         if lFC:
-            if up_inverse(color, board[j][i]):
-                availableMoves.append(strC(j, i))
-                break
+            if low_inverse(color, board[j][i]):
+                m = i-1
+                n = j-1
+                while m >= 0 and n >=0:
+                    availableMoves.append(strC(n, m))
+                    n -=1
+                    m -=1
+                
 
         if up_inverse(color, board[j][i]):
             break
@@ -83,9 +88,14 @@ def diagonalLegalMoves(xCord,yCord,board,color,lFC):
 
     while i < 8 and j >= 0:
         if lFC:
-            if up_inverse(color, board[j][i]):
-                availableMoves.append(strC(j, i))
-                break
+            if low_inverse(color, board[j][i]):
+                m = i+1
+                n = j-1
+                while m < 8 and n >=0 :
+                    availableMoves.append(strC(n, m))
+                    m +=1
+                    n -=1
+                    
         if up_inverse(color, board[j][i]):
             break
         elif low_inverse(color, board[j][i]):
@@ -102,9 +112,14 @@ def diagonalLegalMoves(xCord,yCord,board,color,lFC):
 
     while i < 8 and j < 8:
         if lFC:
-            if up_inverse(color, board[j][i]):
-                availableMoves.append(strC(j, i))
-                break
+            if low_inverse(color, board[j][i]):
+                m = i-1
+                n = j-1
+                while m < 8 and n <8:
+                    availableMoves.append(strC(n, m))
+                    n +=1
+                    m +=1
+                    
         if up_inverse(color, board[j][i]):
             break
         elif low_inverse(color, board[j][i]):
@@ -121,9 +136,14 @@ def diagonalLegalMoves(xCord,yCord,board,color,lFC):
 
     while i >= 0 and j < 8:
         if lFC:
-            if up_inverse(color, board[j][i]):
-                availableMoves.append(strC(j, i))
-                break
+            if low_inverse(color, board[j][i]):
+                m = i-1
+                n = j+1
+                while m >= 0 and n <8:
+                    availableMoves.append(strC(n, m))
+                    n +=1
+                    m -=1
+                    
         if up_inverse(color, board[j][i]):
             break
         elif low_inverse(color, board[j][i]):
@@ -142,9 +162,10 @@ def straightLegalMoves(xCord,yCord,board,color,lFC):
     # upper move
     for i in range(yCord-1, -1, -1):
         if lFC:
-            if up_inverse(color, board[i][xCord]): 
-                availableMoves.append(strC(i, xCord))
-                break    
+            if low_inverse(color, board[i][xCord]): 
+                for j in range(i,-1,-1):
+                    availableMoves.append(strC(j, xCord))
+                    
         if up_inverse(color, board[i][xCord]): 
             break
         if low_inverse(color, board[i][xCord]):
@@ -155,12 +176,10 @@ def straightLegalMoves(xCord,yCord,board,color,lFC):
     # lower moves
     for i in range(yCord+1, 8):
         if lFC:
-            if up_inverse(color,board[i][xCord]):
-                # print(f"{color} long boi ttacking dis {strC(yCord, i)} -- {board[yCord][i]}")
-
-                availableMoves.append(strC(i, xCord))
-                # print(availableMoves)
-                break
+            if low_inverse(color,board[i][xCord]):
+                for j in range(i,8):
+                    availableMoves.append(strC(j, xCord))
+                
         if up_inverse(color,board[i][xCord]):
             break
         elif low_inverse(color, board[i][xCord]):
@@ -172,9 +191,11 @@ def straightLegalMoves(xCord,yCord,board,color,lFC):
     # right moves
     for i in range(xCord+1, 8):
         if lFC:
-            if up_inverse(color,board[yCord][i]):
-                availableMoves.append(strC(yCord, i))
-                break            
+            continueformore = False
+            if low_inverse(color,board[yCord][i]):
+                for j in range(i,8):
+                    availableMoves.append(strC(yCord, j))
+
         if up_inverse(color,board[yCord][i]):
             break
         elif low_inverse(color, board[yCord][i]):
@@ -182,15 +203,14 @@ def straightLegalMoves(xCord,yCord,board,color,lFC):
             break
         elif not board[yCord][i]:
             availableMoves.append(strC(yCord, i))
+        
 
     # left moves
     for i in range(xCord-1, -1, -1):
         if lFC:
-            if up_inverse(color,board[yCord][i]):
-                availableMoves.append(strC(yCord, i))
-
-                # print(f"{color} long boi ttacking dis {strC(yCord, i)} -- {board[yCord][i]}")
-                break
+            if low_inverse(color,board[yCord][i]):
+                for j in range(i,-1,-1):
+                    availableMoves.append(strC(yCord, j))
 
         if up_inverse(color,board[yCord][i]):
             break
@@ -235,11 +255,11 @@ def moveController(square,board,turn):
     isChecked,kingEscapeMoves,kingCords,attackers = isKingOnCheck(board, turn)
     pinLegalMove, pin = kingSight(turn, board,kingCords,square)
 
+    checkEscape= []
     if isChecked:
         checkEscape = getOutofCheck(square, attackers, board,kingCords)
         if checkEscape == []:
             checkEscape = 0
-    checkEscape= []
     if kingEscapeMoves == []:
         kingEscapeMoves = 0
     
@@ -379,7 +399,6 @@ def kingSight(color,board,kingCords,square):
         for i in range(yCord-1,ySquare,-1):
             if board[i][xCord]:
                 pieceBetween = True
-                print('hi') 
                 break
         
         if not pieceBetween:
@@ -613,7 +632,6 @@ def isKingOnCheck(board,color):
         king = 'K'
     else:
         king = 'k'
-
     opponentPiecesCords = []
     kingEscapeMoves =[]
     attackerPieces = []
@@ -634,7 +652,9 @@ def isKingOnCheck(board,color):
             continue
         for move in getLegalMoves(piece[1], board,None,True,None,None):
             if kingEscapeMoves:
+                print(move)
                 for kingMove in kingEscapeMoves:
+                    
                     if move == kingMove:
                         # print(f'the piece {piece[0]} at {piece[1]} is attacking the king at {move} ')
                         kingEscapeMoves.remove(kingMove)
