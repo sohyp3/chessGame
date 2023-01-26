@@ -469,10 +469,7 @@ def kingSight(color,board,kingCords,square):
 
                 i +=1
                 j -=1
-                # n +=1
 
-
-            
             if not pieceBetween:
                 while n < 8 and m > 0:
                     print(board[m][n])  
@@ -488,7 +485,7 @@ def kingSight(color,board,kingCords,square):
                             currentLegalMoves = getLegalMoves(square, board,None,False,None)
 
                             for move in currentLegalMoves:
-                                if abs(int(move[0])-yCord) == abs(int(move[1])-xCord):
+                                if abs(int(move[0])-yCord) == abs(int(move[1])-xCord) and yCord > int(move[0]) and xCord < int(move[1]):
                                     newLegalMoves.append(move)               
                     n +=1
                     m -=1
