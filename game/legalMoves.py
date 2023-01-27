@@ -54,6 +54,11 @@ def knightLegalMoves (xCord,yCord,board,color,lFC):
     return availableMoves
 
 def diagonalLegalMoves(xCord,yCord,board,color,lFC):
+    if color:
+        king = 'k'
+    else:
+        king='K'
+
     # color True is light || False is dark
     availableMoves = []
 
@@ -63,12 +68,14 @@ def diagonalLegalMoves(xCord,yCord,board,color,lFC):
     while i >= 0 and j >= 0:
         if lFC:
             if low_inverse(color, board[j][i]):
-                m = i-1
-                n = j-1
-                while m >= 0 and n >=0:
-                    availableMoves.append(strC(n, m))
-                    n -=1
-                    m -=1
+                if board[j][i] == king:
+
+                    m = i-1
+                    n = j-1
+                    while m >= 0 and n >=0:
+                        availableMoves.append(strC(n, m))
+                        n -=1
+                        m -=1
                 
 
         if up_inverse(color, board[j][i]):
@@ -89,12 +96,14 @@ def diagonalLegalMoves(xCord,yCord,board,color,lFC):
     while i < 8 and j >= 0:
         if lFC:
             if low_inverse(color, board[j][i]):
-                m = i+1
-                n = j-1
-                while m < 8 and n >=0 :
-                    availableMoves.append(strC(n, m))
-                    m +=1
-                    n -=1
+                if board[j][i] == king:
+
+                    m = i+1
+                    n = j-1
+                    while m < 8 and n >=0 :
+                        availableMoves.append(strC(n, m))
+                        m +=1
+                        n -=1
                     
         if up_inverse(color, board[j][i]):
             break
@@ -113,12 +122,13 @@ def diagonalLegalMoves(xCord,yCord,board,color,lFC):
     while i < 8 and j < 8:
         if lFC:
             if low_inverse(color, board[j][i]):
-                m = i-1
-                n = j-1
-                while m < 8 and n <8:
-                    availableMoves.append(strC(n, m))
-                    n +=1
-                    m +=1
+                if board[j][i] == king:
+                    m = i-1
+                    n = j-1
+                    while m < 8 and n <8:
+                        availableMoves.append(strC(n, m))
+                        n +=1
+                        m +=1
                     
         if up_inverse(color, board[j][i]):
             break
@@ -137,12 +147,13 @@ def diagonalLegalMoves(xCord,yCord,board,color,lFC):
     while i >= 0 and j < 8:
         if lFC:
             if low_inverse(color, board[j][i]):
-                m = i-1
-                n = j+1
-                while m >= 0 and n <8:
-                    availableMoves.append(strC(n, m))
-                    n +=1
-                    m -=1
+                if board[j][i] == king:
+                    m = i-1
+                    n = j+1
+                    while m >= 0 and n <8:
+                        availableMoves.append(strC(n, m))
+                        n +=1
+                        m -=1
                     
         if up_inverse(color, board[j][i]):
             break
@@ -157,14 +168,20 @@ def diagonalLegalMoves(xCord,yCord,board,color,lFC):
     return availableMoves
 
 def straightLegalMoves(xCord,yCord,board,color,lFC):
+    
+    if color:
+        king = 'k'
+    else:
+        king='K'
     # color True is light || False is dark
     availableMoves = []
     # upper move
     for i in range(yCord-1, -1, -1):
         if lFC:
             if low_inverse(color, board[i][xCord]): 
-                for j in range(i,-1,-1):
-                    availableMoves.append(strC(j, xCord))
+                if board[i][xCord] == king:
+                    for j in range(i,-1,-1):
+                        availableMoves.append(strC(j, xCord))
                     
         if up_inverse(color, board[i][xCord]): 
             break
@@ -177,8 +194,10 @@ def straightLegalMoves(xCord,yCord,board,color,lFC):
     for i in range(yCord+1, 8):
         if lFC:
             if low_inverse(color,board[i][xCord]):
-                for j in range(i,8):
-                    availableMoves.append(strC(j, xCord))
+                if board[i][xCord] == king:
+
+                    for j in range(i,8):
+                        availableMoves.append(strC(j, xCord))
                 
         if up_inverse(color,board[i][xCord]):
             break
@@ -193,8 +212,10 @@ def straightLegalMoves(xCord,yCord,board,color,lFC):
         if lFC:
             continueformore = False
             if low_inverse(color,board[yCord][i]):
-                for j in range(i,8):
-                    availableMoves.append(strC(yCord, j))
+                if board[yCord][i] == king:
+
+                    for j in range(i,8):
+                        availableMoves.append(strC(yCord, j))
 
         if up_inverse(color,board[yCord][i]):
             break
@@ -209,8 +230,11 @@ def straightLegalMoves(xCord,yCord,board,color,lFC):
     for i in range(xCord-1, -1, -1):
         if lFC:
             if low_inverse(color,board[yCord][i]):
-                for j in range(i,-1,-1):
-                    availableMoves.append(strC(yCord, j))
+                if board[yCord][i] == king:
+                    
+                    for j in range(i,-1,-1):
+
+                        availableMoves.append(strC(yCord, j))
 
         if up_inverse(color,board[yCord][i]):
             break
@@ -395,7 +419,6 @@ def kingSight(color,board,kingCords,square):
     newLegalMoves = []
     # (top)   
     if xCord == xSquare and yCord > ySquare:     
-        print(ySquare)
         for i in range(yCord-1,ySquare,-1):
             if board[i][xCord]:
                 pieceBetween = True
@@ -554,7 +577,6 @@ def kingSight(color,board,kingCords,square):
                         friendlyPieceTop = True
                         break
                     if low_inverse(color, board[m][n]):
-                        print('here')   
                         if board[m][n] == queen or board[m][n] == bishop:
                             isPinned = True
                             currentLegalMoves = getLegalMoves(square, board,None,False,None,None)
@@ -652,7 +674,6 @@ def isKingOnCheck(board,color):
             continue
         for move in getLegalMoves(piece[1], board,None,True,None,None):
             if kingEscapeMoves:
-                print(move)
                 for kingMove in kingEscapeMoves:
                     
                     if move == kingMove:
@@ -686,6 +707,7 @@ def getOutofCheck(piece,attackingPieces,board,kingCords):
         if board[yCord][xCord].lower() == 'k':
             continue
         else:
+            print(attackingPieces)
             for move in getLegalMoves(piece, board, None, False, None,None):
                 
                 if move == attacker[1]:
