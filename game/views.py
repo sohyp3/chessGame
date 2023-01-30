@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from .extraFunctions import is_ajax
 from .legalMoves import moveController ,getLegalMoves, kingLegalMoves, straightLegalMoves, diagonalLegalMoves, knightLegalMoves, pawnLegalMoves, pawnColorMoves, isKingOnCheck
 
+from .controller import controller
 
 def mainView(request):
     return render(request, 'mainPage.html')
@@ -50,7 +51,6 @@ def board(request):
             request.session['board'] = movePieces(oldSquare, newSquare, board)
             request.session['turn'] = not request.session['turn']
             turn = request.session['turn']
-            # isKingOnCheck(board, turn) 
             newRs= {
                 'board':board,
                 'turn':turn
@@ -93,9 +93,9 @@ def resetBoard(request):
     request.session['board'] = [
             ["r", "n", "b", "q", "k", "b", "n", "r"],
             ["p", "p", "p", "p", "p", "p", "p", "p"],
-            ["", "", "", "b", "", "", "", ""],
             ["", "", "", "", "", "", "", ""],
-            ["", "", "", "", "", "K", "", ""],
+            ["", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "K", "", "r"],
             ["", "", "", "", "", "", "", ""],
             ["P", "P", "P", "P", "P", "P", "P", "P"],
             ["R", "N", "B", "Q", "", "B", "N", "R"]
