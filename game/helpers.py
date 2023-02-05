@@ -24,6 +24,22 @@ def oppositeColor(switcher,string):
 def strC(y, x):
     return str(y)+str(x)
 
+# Dark Pieces move down
+# Light Pieces move up
+def pawnColorMoves(color):
+    if color:
+        direction = -1
+        baseSquare = 6
+    else:
+        direction = 1
+        baseSquare = 1
+    return direction, baseSquare
+
+def kingName(color):
+    if color:
+        return 'K'
+    else:
+        return 'k'
 
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'

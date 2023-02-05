@@ -45,7 +45,7 @@ def board(request):
         }
 
         if square:
-            return JsonResponse({'moves': moveController(square, board, turn)})
+            return JsonResponse({'moves': controller(square, board, turn)})
 
         if newSquare:
             request.session['board'] = movePieces(oldSquare, newSquare, board)
@@ -61,7 +61,8 @@ def board(request):
 
 
 def movePieces(oldPlace, newPlace, board):
-    # for pawns
+
+# check for legal moves
 
     oldCords = int(oldPlace)
     oX = int(oldPlace[1])
