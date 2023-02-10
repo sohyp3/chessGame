@@ -38,11 +38,11 @@ def knightLegalMoves(pieceCoordinates, board, color, lookingForCheck):
     allNightMoves = [(y + 1, x + 2), (y - 1, x + 2), (y + 1, x - 2), (y - 1, x - 2),
                     (y + 2, x + 1), (y + 2, x - 1), (y - 2, x + 1), (y - 2, x - 1)]
     for nightMove in allNightMoves:
-        j,i = nightMove
-        if 0 <= j < 8 and 0 <= i <8:
-            if sameColor(color, board[j][i]):
+        row,col = nightMove
+        if 0 <= row < 8 and 0 <= col <8:
+            if sameColor(color, board[row][col]):
                 continue
-            availableMoves.append(strC(j,i))
+            availableMoves.append(strC(row,col))
     
     return availableMoves
 
@@ -52,18 +52,60 @@ def straightLegalMoves(pieceCoordinates,board,color,lookingForCheck):
     y = int(pieceCoordinates[0])
 
     availableMoves = []
-
-    # Upper Moves
-    for i in range(y-1,-1,-1):
-        if sameColor(color, board[i][x]):
-            break
-        elif oppositeColor(color, board[i][x]):
-            if lookingForCheck and board[i][x]:
-                return 'onCheck' 
-                
-            availableMoves.append(strC(i,x))
-            break
-        elif not board[i][x]:
-            availableMoves.append(strC(i,x))
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
     
+    for direction in directions:
+        row, col = y + direction[0], x + direction[1]
+        while 0 <= row < 8 and 0 <= col < 8:
+            if lookingForCheck:
+                if isUnderAttack(row, col, board, color):
+                    break
+            if board[row][col]:
+                if sameColor(color, board[row][col]):
+                    break
+                availableMoves.append(strC(row, col))
+                break
+            availableMoves.append(strC(row, col))
+            row += direction[0]
+            col += direction[1]
     return availableMoves
+
+def diagonalLegalMoves(pieceCoordinates,board,color,lookingForCheck):
+    x = int(pieceCoordinates[1])
+    y = int(pieceCoordinates[0])    
+    availableMoves = []
+    directions = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
+    
+    for direction in directions:
+        row, col = y + direction[0], x + direction[1]
+        while 0 <= row < 8 and 0 <= col < 8:
+            if lookingForCheck:
+                if isUnderAttack(row, col, board, color):
+                    break
+            if board[row][col]:
+                if sameColor(color, board[row][col]):
+                    break
+                availableMoves.append(strC(row, col))
+                break
+            availableMoves.append(strC(row, col))
+            row += direction[0]
+            col += direction[1]
+    return availableMoves
+
+def kingLegalMoves(pieceCoordinates,board,color,lookingForCheck):
+    x = int(pieceCoordinates[1])
+    y = int(pieceCoordinates[0])    
+    availableMoves = []
+    allKingMoves = [(y+1, x),(y-1, x),(y, x+1),(y, x-1),
+                    (y+1, x+1),(y-1, x+1),(y+1, x-1),(y-1, x-1),]
+    for kingMove in allKingMoves:
+        row,col = kingMove
+        if 0 <= row < 8 and 0 <= col < 8:
+            if lookingForCheck:
+                if isUnderAttack(row, col, board, color):
+                    break
+            if sameColor(color, board[row][col]):
+                continue
+            availableMoves.append(strC(row,col))
+    return availableMoves
+            

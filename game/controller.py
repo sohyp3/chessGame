@@ -1,4 +1,4 @@
-from .movements import pawnLegalMoves,knightLegalMoves,straightLegalMoves
+from .movements import pawnLegalMoves,knightLegalMoves,straightLegalMoves,diagonalLegalMoves,kingLegalMoves
 def controller(pieceCoordinates,board,turn):
     return getLegalMoves(pieceCoordinates, board)
 
@@ -17,4 +17,15 @@ def getLegalMoves(pieceCoordinates,board):
     
     if pieceName.lower() == 'r':
         moves = straightLegalMoves(pieceCoordinates, board, pieceName.isupper(), False)
+
+    if pieceName.lower() == 'b':
+        moves = diagonalLegalMoves(cords, board, pieceName.isupper(), False)
+
+    if pieceName.lower() == 'q':
+        moves = straightLegalMoves(cords, board, pieceName.isupper(), False)
+        moves += diagonalLegalMoves(cords, board, pieceName.isupper(), False)
+    
+    if pieceName.lower() == 'k':
+        moves = kingLegalMoves(cords, board, pieceName.isupper(), False)
+
     return moves

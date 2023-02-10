@@ -41,5 +41,16 @@ def kingName(color):
     else:
         return 'k'
 
+def piecesName(color):
+    if color:
+        queen = 'Q'
+        rook = 'R'
+        bishop = 'P'
+    else:
+        queen = 'q'
+        rook = 'r'
+        bishop = 'b' 
+    return queen,rook,bishop
+
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
