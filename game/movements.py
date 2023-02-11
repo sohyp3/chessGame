@@ -40,9 +40,15 @@ def knightLegalMoves(pieceCoordinates, board, color, lookingForCheck):
     for nightMove in allNightMoves:
         row,col = nightMove
         if 0 <= row < 8 and 0 <= col <8:
-            if sameColor(color, board[row][col]):
-                continue
-            availableMoves.append(strC(row,col))
+            if lookingForCheck:
+                if board[row][col] == sameColor(color, board[row][col]):
+                    availableMoves.append(strC(row, col))
+                    break
+                availableMoves.append(strC(row, col))  
+            else:
+                if sameColor(color, board[row][col]):
+                    continue
+                availableMoves.append(strC(row,col))
     
     return availableMoves
 
@@ -57,12 +63,16 @@ def straightLegalMoves(pieceCoordinates,board,color,lookingForCheck):
     for direction in directions:
         row, col = y + direction[0], x + direction[1]
         while 0 <= row < 8 and 0 <= col < 8:
-            if lookingForCheck:
-                pass
             if board[row][col]:
-                if sameColor(color, board[row][col]):
-                    break
-                availableMoves.append(strC(row, col))
+                if lookingForCheck:
+                    if board[row][col] == sameColor(color, board[row][col]):
+                        availableMoves.append(strC(row, col))
+                        break
+                    availableMoves.append(strC(row, col))
+                else:
+                    if sameColor(color, board[row][col]):
+                        break
+                    availableMoves.append(strC(row, col))
                 break
             availableMoves.append(strC(row, col))
             row += direction[0]
@@ -105,9 +115,13 @@ def kingLegalMoves(pieceCoordinates,board,color,lookingForCheck):
         row,col = kingMove
         if 0 <= row < 8 and 0 <= col < 8:
             if lookingForCheck:
-                pass
-            if sameColor(color, board[row][col]):
-                continue
-            availableMoves.append(strC(row,col))
+                if board[row][col] == sameColor(color, board[row][col]):
+                    availableMoves.append(strC(row, col))
+                    break
+                availableMoves.append(strC(row, col))
+            else:
+                if sameColor(color, board[row][col]):
+                    continue
+                availableMoves.append(strC(row,col))
     return availableMoves
 

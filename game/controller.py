@@ -3,10 +3,10 @@ from .movements import pawnLegalMoves,knightLegalMoves,straightLegalMoves,diagon
 from .helpers import oppositeColor,kingName,strC
 
 def controller(pieceCoordinates,board,turn):
-    isKingOnCheck(board, turn)
-    return getLegalMoves(pieceCoordinates, board,lookingForCheck=False)
+    isCheck, kingMoves= isKingOnCheck(board, turn)
+    return getLegalMoves(pieceCoordinates, board,lookingForCheck=False,kingMoves=kingMoves)
 
-def getLegalMoves(pieceCoordinates,board,lookingForCheck):
+def getLegalMoves(pieceCoordinates,board,lookingForCheck,kingMoves):
     cords = pieceCoordinates
     x = int(pieceCoordinates[1])
     y = int(pieceCoordinates[0])
@@ -31,6 +31,8 @@ def getLegalMoves(pieceCoordinates,board,lookingForCheck):
     
     if pieceName.lower() == 'k':
         moves = kingLegalMoves(cords, board, pieceName.isupper(), lookingForCheck)
+        if kingMoves != None:
+            moves = kingMoves            
 
     return moves
 
@@ -49,10 +51,10 @@ def isKingOnCheck(board,color):
 
             if board[row][col] == kingName(color):
                 kingCords = strC(row, col)
-                kingMoves = getLegalMoves(kingCords, board,lookingForCheck=False)
+                kingMoves = getLegalMoves(kingCords, board,lookingForCheck=False,kingMoves=None)
     
     for piece in opponentPieces:
-        moves = getLegalMoves(piece[1], board, lookingForCheck=True)
+        moves = getLegalMoves(piece[1], board, lookingForCheck=True,kingMoves=None)
         if not moves:
             continue
         for move in moves:
@@ -60,8 +62,9 @@ def isKingOnCheck(board,color):
                 for kingMove in kingMoves:
                     if move == kingCords:
                         isChecked = True
-
+                        attackPieces.append(piece)
                     if move == kingMove:
                         kingMoves.remove(kingMove)
-                        print(f'here.. piece {piece[0]} at {piece[1]} is attacking the king king' )
+                        # print(f'here.. piece {piece[0]} at {piece[1]} is attacking the king king' )
+                        # print(kingMoves)
     return isChecked, kingMoves
