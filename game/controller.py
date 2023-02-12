@@ -3,7 +3,9 @@ from .movements import pawnLegalMoves,knightLegalMoves,straightLegalMoves,diagon
 from .helpers import oppositeColor,kingName,strC
 
 def controller(pieceCoordinates,board,turn):
-    isCheck, kingMoves= isKingOnCheck(board, turn)
+    isCheck, kingMoves, kingCords, attackerPieces= isKingOnCheck(board, turn)
+    if isCheck:
+        pass
     return getLegalMoves(pieceCoordinates, board,lookingForCheck=False,kingMoves=kingMoves)
 
 def getLegalMoves(pieceCoordinates,board,lookingForCheck,kingMoves):
@@ -36,14 +38,21 @@ def getLegalMoves(pieceCoordinates,board,lookingForCheck,kingMoves):
 
     return moves
 
+def getOutOfCheck(pieceCoordinates,attackingPieces,kingCordinates,board):
+    x = int(pieceCoordinates[1])
+    y = int (pieceCoordinates[0])
+    availablemoves = []
 
+    for attacker in attackingPieces:
+        print(attacker)
+    
 
 def isKingOnCheck(board,color):
     opponentPieces = []
     kingMoves = []
     attackPieces = []
     isChecked = False
-
+    
     for row in range(8):
         for col in range(8):
             if oppositeColor(color, board[row][col]):
@@ -52,6 +61,7 @@ def isKingOnCheck(board,color):
             if board[row][col] == kingName(color):
                 kingCords = strC(row, col)
                 kingMoves = getLegalMoves(kingCords, board,lookingForCheck=False,kingMoves=None)
+
     
     for piece in opponentPieces:
         moves = getLegalMoves(piece[1], board, lookingForCheck=True,kingMoves=None)
@@ -63,8 +73,9 @@ def isKingOnCheck(board,color):
                     if move == kingCords:
                         isChecked = True
                         attackPieces.append(piece)
+                        print(f'here.. piece {piece[0]} at {piece[1]} is attacking the king king' )
+                        break
                     if move == kingMove:
                         kingMoves.remove(kingMove)
-                        # print(f'here.. piece {piece[0]} at {piece[1]} is attacking the king king' )
-                        # print(kingMoves)
-    return isChecked, kingMoves
+                        attackPieces.append(piece)
+    return isChecked, kingMoves, kingCords, attackPieces

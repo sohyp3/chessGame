@@ -119,7 +119,7 @@ def kingLegalMoves(pieceCoordinates,board,color,lookingForCheck):
                     availableMoves.append(strC(row, col))
                     break
                 availableMoves.append(strC(row, col))
-            else:
+            else: 
                 if sameColor(color, board[row][col]):
                     continue
                 availableMoves.append(strC(row,col))
