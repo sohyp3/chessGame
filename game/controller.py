@@ -1,11 +1,9 @@
 from .movements import pawnLegalMoves,knightLegalMoves,straightLegalMoves,diagonalLegalMoves,kingLegalMoves
-# from . import checkCheck
 from .helpers import oppositeColor,kingName,strC
 
 def controller(pieceCoordinates,board,turn):
     isCheck, kingMoves, kingCords, attackerPieces= isKingOnCheck(board, turn)
-    if isCheck:
-        pass
+
     return getLegalMoves(pieceCoordinates, board,lookingForCheck=False,kingMoves=kingMoves)
 
 def getLegalMoves(pieceCoordinates,board,lookingForCheck,kingMoves):
@@ -33,19 +31,11 @@ def getLegalMoves(pieceCoordinates,board,lookingForCheck,kingMoves):
     
     if pieceName.lower() == 'k':
         moves = kingLegalMoves(cords, board, pieceName.isupper(), lookingForCheck)
+        print(kingMoves)
         if kingMoves != None:
             moves = kingMoves            
-
     return moves
 
-def getOutOfCheck(pieceCoordinates,attackingPieces,kingCordinates,board):
-    x = int(pieceCoordinates[1])
-    y = int (pieceCoordinates[0])
-    availablemoves = []
-
-    for attacker in attackingPieces:
-        print(attacker)
-    
 
 def isKingOnCheck(board,color):
     opponentPieces = []
@@ -61,8 +51,9 @@ def isKingOnCheck(board,color):
             if board[row][col] == kingName(color):
                 kingCords = strC(row, col)
                 kingMoves = getLegalMoves(kingCords, board,lookingForCheck=False,kingMoves=None)
+                board[row][col]= ''
+                
 
-    
     for piece in opponentPieces:
         moves = getLegalMoves(piece[1], board, lookingForCheck=True,kingMoves=None)
         if not moves:
@@ -76,6 +67,11 @@ def isKingOnCheck(board,color):
                         print(f'here.. piece {piece[0]} at {piece[1]} is attacking the king king' )
                         break
                     if move == kingMove:
+                        # print(move)
+                        # print()                        
                         kingMoves.remove(kingMove)
                         attackPieces.append(piece)
+
+    # Setting the King on the board again
+    board[int(kingCords[0])][int(kingCords[1])] = kingName(color)
     return isChecked, kingMoves, kingCords, attackPieces
