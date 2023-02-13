@@ -100,7 +100,6 @@ def getOutOfCheck(piece,attackerPieces,board,kingCords):
 
                 # block
                 attackLine = getLine(kingCords, attackerPieces[0][1])
-
                 if attackLine and move in attackLine:
                     availableMoves.append(move)
     else:
@@ -131,7 +130,7 @@ def getLine(start, end):
         for i in range(startY+step, endY, step):
             line.append(strC(i, startX))
 
-    # Straight Y axis
+    # straight Y axis
     elif startY == endY:
         if endX > startX:
             step = 1
@@ -141,17 +140,20 @@ def getLine(start, end):
             line.append(strC(startY, i))
 
     # diagonal 
+
     elif abs(startX - endX) == abs(startY - endY):
         if endX > startX:
             stepX = 1
         else:
-            stepX -1
-        if stepY > startY:
+            stepX = -1
+        if endY > startY:
             stepY = 1
         else:
             stepY = -1
 
         for i in range(startX+stepX, endX, stepX):
-            line.append(strC(startY + stepY * (i - startX), i))
+            startY +=  stepY
+            line.append(strC(startY, i))
+
 
     return line
