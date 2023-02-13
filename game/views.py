@@ -33,6 +33,14 @@ def board(request):
         ]
         board = request.session['board']
 
+    if 'movedStatus' in request.session:
+        movedStatus = request.session['movedStatus']
+    else:
+        # First element for dark, second for light
+        # 00r - 04k - 07r || 70R - 74K - 77R 
+        request.session['movedStatus'] = [(False,False,False),(False,False,False)]
+        movedStatus = request.session['movedStatus']
+
     if is_ajax(request):
         square = request.POST.get('sqId')
 
@@ -45,7 +53,7 @@ def board(request):
         }
 
         if square:
-            return JsonResponse({'moves': controller(square, board, turn)})
+            return JsonResponse({'moves': controller(square, board, turn,movedStatus)})
 
         if newSquare:
             request.session['board'] = movePieces(oldSquare, newSquare, board)
