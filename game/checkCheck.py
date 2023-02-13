@@ -13,12 +13,12 @@ def isKingOnCheck(board,color):
 
             if board[row][col] == kingName(color):
                 kingCords = strC(row, col)
-                kingMoves = getLegalMoves(kingCords, board,lookingForCheck=False,kingMoves=None,getOutOfCheckMoves=None)
+                kingMoves = getLegalMoves(kingCords, board,lookingForCheck=False,kingMoves=None,getOutOfCheckMoves=None,pinnedLegalMoves=None)
                 board[row][col]= ''
                 
 
     for piece in opponentPieces:
-        moves = getLegalMoves(piece[1], board, lookingForCheck=True,kingMoves=None,getOutOfCheckMoves=None)
+        moves = getLegalMoves(piece[1], board, lookingForCheck=True,kingMoves=None,getOutOfCheckMoves=None,pinnedLegalMoves=None)
         if not moves:
             continue
         for move in moves:
@@ -27,7 +27,7 @@ def isKingOnCheck(board,color):
                     if move == kingCords:
                         isChecked = True
                         attackPieces.append(piece)
-                        print(f'here.. piece {piece[0]} at {piece[1]} is attacking the king king' )
+                        # print(f'here.. piece {piece[0]} at {piece[1]} is attacking the king king' )
                         break
                     if move == kingMove:                      
                         kingMoves.remove(kingMove)
@@ -43,9 +43,10 @@ def getOutOfCheck(piece,attackerPieces,board,kingCords):
     availableMoves = []
     if len(attackerPieces)< 2:
         if board[y][x].lower() == 'k':
-            print('shing')
+            pass
+        
         else:
-            moves = getLegalMoves(piece, board, lookingForCheck= False, kingMoves=None,getOutOfCheckMoves=None)
+            moves = getLegalMoves(piece, board, lookingForCheck= False, kingMoves=None,getOutOfCheckMoves=None,pinnedLegalMoves=None)
             for move in moves:
                 # in attackerPieces [0] pieceName [1] pieceCords
                 # first [0] to select the first and only item in the list second [1] to select the cords of the attacker piecew
@@ -64,9 +65,8 @@ def getOutOfCheck(piece,attackerPieces,board,kingCords):
                 continue
 
             else:
-                moves = getLegalMoves(piece, board, lookingForCheck= False, kingMoves=None,getOutOfCheckMoves=None)
+                moves = getLegalMoves(piece, board, lookingForCheck= False, kingMoves=None,getOutOfCheckMoves=None,pinnedLegalMoves=None)
         
-    print(availableMoves)
     return availableMoves
 
 def getLine(start, end):
@@ -113,3 +113,29 @@ def getLine(start, end):
 
 
     return line
+
+def isPinned(piece,turn,board):
+    pieceX = int(piece[1])
+    pieceY = int(piece[0])
+    pieceName = board[pieceY][pieceX]
+    availableMoves = []
+    isPiecePinned = False
+    if pieceName.lower() != 'k':
+
+        # i will get the attackers on the king, then remove the piece and compare, does the attackers add? if yes that means it should be pinned
+        oisCheck, okingMoves, okingCords, oattackerPieces= isKingOnCheck(board, turn)
+
+        board[pieceY][pieceX] = ''
+
+        nisCheck, nkingMoves, nkingCords, nattackerPieces = isKingOnCheck(board, turn)
+
+        if len(oattackerPieces) ==len( nattackerPieces):
+            availableMoves = None
+        else:
+            pinner = list(set(nattackerPieces) - set(oattackerPieces))[0][1]
+            pinner = strC(pinner[0],pinner[1])
+            availableMoves = getLine(piece, pinner)
+            availableMoves.append(pinner)
+            isPiecePinned = True
+        board[pieceY][pieceX] = pieceName
+        return availableMoves

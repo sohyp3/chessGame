@@ -1,7 +1,7 @@
 from .movements import pawnLegalMoves,knightLegalMoves,straightLegalMoves,diagonalLegalMoves,kingLegalMoves
 
 
-def getLegalMoves(pieceCoordinates,board,lookingForCheck,kingMoves,getOutOfCheckMoves):
+def getLegalMoves(pieceCoordinates,board,lookingForCheck,kingMoves,getOutOfCheckMoves, pinnedLegalMoves):
     cords = pieceCoordinates
     x = int(pieceCoordinates[1])
     y = int(pieceCoordinates[0])
@@ -11,6 +11,8 @@ def getLegalMoves(pieceCoordinates,board,lookingForCheck,kingMoves,getOutOfCheck
     
     if getOutOfCheckMoves != None:
         moves = getOutOfCheckMoves
+    elif pinnedLegalMoves != None:
+        moves = pinnedLegalMoves
     else:
 
         if pieceName.lower() == 'p':
