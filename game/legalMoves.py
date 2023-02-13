@@ -709,10 +709,6 @@ def isKingOnCheck(board,color):
     return isChecked, kingEscapeMoves,kingCords,attackerPieces
     
 
-            
-
-
-
 # to get out of check
 # Kill the attacker
 # Run away from the attacker 
