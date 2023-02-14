@@ -8,7 +8,7 @@ def getLegalMoves(pieceCoordinates,board,lookingForCheck,kingMoves,getOutOfCheck
     pieceName = board[y][x]
 
     moves = []
-    
+    # print(f'{cords}-{pieceName}')
     if getOutOfCheckMoves != None:
         moves = getOutOfCheckMoves
     elif pinnedLegalMoves != None:

@@ -6,7 +6,6 @@ def pawnLegalMoves(pieceCoordinates, board, color, lookingForCheck):
     y = int(pieceCoordinates[0])
     direction, baseSquare = pawnColorMoves(color)
     availableMoves = []
-
     if lookingForCheck:
         # diagonal attacks
         if x > 0:

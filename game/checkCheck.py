@@ -125,6 +125,8 @@ def isPinned(piece,turn,board):
 
         nisCheck, nkingMoves, nkingCords, nattackerPieces = isKingOnCheck(board, turn)
 
+        board[pieceY][pieceX] = pieceName
+
         if len(oattackerPieces) ==len( nattackerPieces):
             availableMoves = None
         else:
@@ -133,9 +135,9 @@ def isPinned(piece,turn,board):
             pieceMoves = getLegalMoves(piece, board, lookingForCheck=False, kingMoves=None, getOutOfCheckMoves=None, pinnedLegalMoves=None)
             line = getLine(piece, pinner)
             line.append(pinner)
+            print(pieceMoves)
             for move in pieceMoves:
                 if move in line:
                     availableMoves.append(move)
             isPiecePinned = True
-        board[pieceY][pieceX] = pieceName
         return availableMoves

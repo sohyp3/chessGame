@@ -119,7 +119,7 @@ def movePieces(oldPlace, newPlace, board,movedStatus):
 def resetBoard(request):
     request.session['board'] = [
             ["r", "n", "b", "q", "k", "b", "n", "r"],
-            ["p", "p", "p", "p", "p", "r", "p", "p"],
+            ["p", "p", "p", "p", "p", "b", "p", "p"],
             ["", "", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", "Q"],
             ["", "", "", "", "", "", "", ""],
