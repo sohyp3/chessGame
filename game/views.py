@@ -92,11 +92,35 @@ def movePieces(oldPlace, newPlace, board,movedStatus):
             piece = 'Q'
         else:
             piece = 'q'
+    # Light Short Castle
+    if piece == 'K' and oldCords == 74 and newCords == 77:
+        board[7][4] = ""
+        board[7][7] = ""
+        board[7][5] = "R"
+        board[7][6] = 'K'
+    # Light Long Castle
+    elif piece == 'K' and oldCords == 74 and newCords == 70:
+        board[7][4] = ""
+        board[7][0] = ""
+        board[7][3] = "R"
+        board[7][2] = 'K'      
+    # Dark short Castle
+    elif piece == 'k' and oldCords == 4 and newCords == 7:
+        board[0][4] = ""
+        board[0][7] = ""
+        board[0][5] = "r"
+        board[0][6] = 'k'
+    # Dark Long Castle
+    elif piece == 'k' and oldCords == 4 and newCords == 0:
+        board[0][4] = ""
+        board[0][0] = ""
+        board[0][3] = "r"
+        board[0][2] = 'k'            
+    else:
+        board[oY][oX] = ""
+        board[nY][nX] = piece
 
-
-    board[oY][oX] = ""
-    board[nY][nX] = piece
-
+    print(oldCords)
 
     # Check if kings or rooks moved (for castling)
     if oY == 0 and oX ==0:
@@ -113,19 +137,22 @@ def movePieces(oldPlace, newPlace, board,movedStatus):
     elif oY == 7 and oX == 7:
         movedStatus[1][2] = True
 
+
+
     return board
 
 
 def resetBoard(request):
     request.session['board'] = [
-            ["r", "n", "b", "q", "k", "b", "n", "r"],
+            ["r", "", "", "", "k", "", "", "r"],
             ["p", "p", "p", "p", "p", "b", "p", "p"],
             ["", "", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", "Q"],
             ["", "", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", ""],
             ["P", "P", "P", "P", "P", "P", "P", "P"],
-            ["R", "N", "B", "Q", "K", "B", "N", "R"]
+            ["R", "", "", "", "K", "", "", "R"]
         ]
     request.session['turn'] = True
+    request.session['movedStatus'] = [(False,False,False),(False,False,False)]
     return redirect('boardView')

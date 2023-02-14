@@ -7,10 +7,14 @@ def getLegalMoves(pieceCoordinates,board,**kwargs):
     y = int(pieceCoordinates[0])
     pieceName = board[y][x]
 
+
+    # Variables that i need to pass
+
     lookingForCheck = False
     kingMoves = None
     getOutOfCheckMoves = None
     pinnedLegalMoves = None
+    castleMoves = None
 
     if 'lookingForCheck' in kwargs:
         lookingForCheck = kwargs['lookingForCheck']
@@ -20,7 +24,8 @@ def getLegalMoves(pieceCoordinates,board,**kwargs):
         getOutOfCheckMoves = kwargs['getOutOfCheckMoves']
     if 'pinnedLegalMoves' in kwargs:
         pinnedLegalMoves = kwargs['pinnedLegalMoves']        
-
+    if 'castleMoves' in kwargs:
+        castleMoves = kwargs['castleMoves']
 
     moves = []
     # print(f'{cords}-{pieceName}')
@@ -49,6 +54,8 @@ def getLegalMoves(pieceCoordinates,board,**kwargs):
     if pieceName.lower() == 'k':
         moves = kingLegalMoves(cords, board, pieceName.isupper(), lookingForCheck)
         if kingMoves != None:
-            moves = kingMoves    
-        
+            moves = kingMoves  
+            
+        if castleMoves != None:
+            moves+=(castleMoves)
     return moves

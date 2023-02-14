@@ -1,6 +1,5 @@
 from .helpers import strC, sameColor, oppositeColor, pawnColorMoves, kingName
 
-
 def pawnLegalMoves(pieceCoordinates, board, color, lookingForCheck):
     x = int(pieceCoordinates[1])
     y = int(pieceCoordinates[0])
@@ -123,30 +122,4 @@ def kingLegalMoves(pieceCoordinates,board,color,lookingForCheck):
                     continue
                 availableMoves.append(strC(row,col))
 
-    # if checkingForCastling:
-    #     print('s')
-    #     castleing(movedStatus, color, board)
     return availableMoves
-
-# def castleing(movedStatus,color,board):
-#     opponentPieces = []
-#     canCastle = False
-#     # Light
-#     if color:
-#         # Short Castle (king side)
-#         if not movedStatus[1][1] and not movedStatus[1][2] and board[7][5] == '' and board[7][6] =='' and board[7][7]=='R':
-#             for row in range(8):
-#                 for col in range(8):
-#                     if oppositeColor(color,board[row][col]):
-#                         opponentPieces.append((board[row][col]),strC(row,col))
-            
-#             for piece in opponentPieces:
-#                 moves = getLegalMoves(piece[1], board, lookingForCheck=True,kingMoves=None,getOutOfCheckMoves=None,pinnedLegalMoves=None,checkingForCastling=True)
-#                 for move in moves:
-#                     if move == board[7][4] or move == board[7][5] or move == board[7][6]:
-#                         break
-#                     else:
-#                         canCastle = True
-
-
-#     print(canCastle)
