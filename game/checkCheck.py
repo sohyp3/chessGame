@@ -5,7 +5,6 @@ def isKingOnCheck(board,color):
     kingMoves = []
     attackPieces = []
     isChecked = False
-    
     for row in range(8):
         for col in range(8):
             if oppositeColor(color, board[row][col]):
@@ -17,19 +16,21 @@ def isKingOnCheck(board,color):
                 board[row][col]= ''
                 
 
+    attackPieces = []
     for piece in opponentPieces:
-        moves = getLegalMoves(piece[1], board, lookingForCheck=True,kingMoves=None,getOutOfCheckMoves=None,pinnedLegalMoves=None)
+        moves = getLegalMoves(piece[1], board, lookingForCheck=True, kingMoves=None, getOutOfCheckMoves=None, pinnedLegalMoves=None)
         if not moves:
             continue
         for move in moves:
+            if move == kingCords:
+                isChecked = True
+                if piece not in attackPieces:
+                    attackPieces.append(piece)
+                    # print(f'here.. piece {piece[0]} at {piece[1]} is attacking the king king')
+                break
             if kingMoves:
                 for kingMove in kingMoves:
-                    if move == kingCords:
-                        isChecked = True
-                        attackPieces.append(piece)
-                        # print(f'here.. piece {piece[0]} at {piece[1]} is attacking the king king' )
-                        break
-                    if move == kingMove:                      
+                    if move == kingMove:
                         kingMoves.remove(kingMove)
 
     # Setting the King on the board again
@@ -60,13 +61,7 @@ def getOutOfCheck(piece,attackerPieces,board,kingCords):
                 if attackLine and move in attackLine:
                     availableMoves.append(move)
     else:
-        for attacker in attackerPieces:
-            if board[y][x].lower() == 'k':
-                continue
-
-            else:
-                moves = getLegalMoves(piece, board, lookingForCheck= False, kingMoves=None,getOutOfCheckMoves=None,pinnedLegalMoves=None)
-        
+        pass
     return availableMoves
 
 def getLine(start, end):
@@ -98,6 +93,7 @@ def getLine(start, end):
     # diagonal 
 
     elif abs(startX - endX) == abs(startY - endY):
+        
         if endX > startX:
             stepX = 1
         else:
@@ -134,8 +130,12 @@ def isPinned(piece,turn,board):
         else:
             pinner = list(set(nattackerPieces) - set(oattackerPieces))[0][1]
             pinner = strC(pinner[0],pinner[1])
-            availableMoves = getLine(piece, pinner)
-            availableMoves.append(pinner)
+            pieceMoves = getLegalMoves(piece, board, lookingForCheck=False, kingMoves=None, getOutOfCheckMoves=None, pinnedLegalMoves=None)
+            line = getLine(piece, pinner)
+            line.append(pinner)
+            for move in pieceMoves:
+                if move in line:
+                    availableMoves.append(move)
             isPiecePinned = True
         board[pieceY][pieceX] = pieceName
         return availableMoves

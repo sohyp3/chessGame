@@ -56,7 +56,7 @@ def board(request):
             return JsonResponse({'moves': controller(square, board, turn,movedStatus)})
 
         if newSquare:
-            request.session['board'] = movePieces(oldSquare, newSquare, board)
+            request.session['board'] = movePieces(oldSquare, newSquare, board,movedStatus)
             request.session['turn'] = not request.session['turn']
             turn = request.session['turn']
             newRs= {
@@ -68,7 +68,7 @@ def board(request):
         return JsonResponse(jsResponseInfo)
 
 
-def movePieces(oldPlace, newPlace, board):
+def movePieces(oldPlace, newPlace, board,movedStatus):
 
 # check for legal moves
 
@@ -93,21 +93,39 @@ def movePieces(oldPlace, newPlace, board):
         else:
             piece = 'q'
 
+
     board[oY][oX] = ""
     board[nY][nX] = piece
+
+
+    # Check if kings or rooks moved (for castling)
+    if oY == 0 and oX ==0:
+        movedStatus[0][0] = True
+    elif oY == 0 and oX == 4:
+        movedStatus[0][1] = True
+    elif oY == 0 and oX == 7:
+        movedStatus[0][2] = True
+
+    if oY == 7 and oX == 0:
+        movedStatus[1][0] = True
+    elif oY == 7 and oX == 4:
+        movedStatus[1][1] = True
+    elif oY == 7 and oX == 7:
+        movedStatus[1][2] = True
+
     return board
 
 
 def resetBoard(request):
     request.session['board'] = [
-            ["r", "n", "", "q", "k", "b", "n", "b"],
-            ["p", "p", "p", "", "p", "r", "r", "p"],
+            ["r", "n", "b", "q", "k", "b", "n", "r"],
+            ["p", "p", "p", "p", "p", "r", "p", "p"],
             ["", "", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", "Q"],
-            ["", "", "", "", "", "P", "K", ""],
+            ["", "", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", ""],
             ["P", "P", "P", "P", "P", "P", "P", "P"],
-            ["R", "N", "B", "Q", "", "B", "N", "R"]
+            ["R", "N", "B", "Q", "K", "B", "N", "R"]
         ]
     request.session['turn'] = True
     return redirect('boardView')
