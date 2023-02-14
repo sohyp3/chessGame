@@ -1,11 +1,26 @@
 from .movements import pawnLegalMoves,knightLegalMoves,straightLegalMoves,diagonalLegalMoves,kingLegalMoves
 
 
-def getLegalMoves(pieceCoordinates,board,lookingForCheck,kingMoves,getOutOfCheckMoves, pinnedLegalMoves):
+def getLegalMoves(pieceCoordinates,board,**kwargs):
     cords = pieceCoordinates
     x = int(pieceCoordinates[1])
     y = int(pieceCoordinates[0])
     pieceName = board[y][x]
+
+    lookingForCheck = False
+    kingMoves = None
+    getOutOfCheckMoves = None
+    pinnedLegalMoves = None
+
+    if 'lookingForCheck' in kwargs:
+        lookingForCheck = kwargs['lookingForCheck']
+    if 'kingMoves' in kwargs:
+        kingMoves = kwargs['kingMoves']
+    if 'getOutOfCheckMoves' in kwargs:
+        getOutOfCheckMoves = kwargs['getOutOfCheckMoves']
+    if 'pinnedLegalMoves' in kwargs:
+        pinnedLegalMoves = kwargs['pinnedLegalMoves']        
+
 
     moves = []
     # print(f'{cords}-{pieceName}')

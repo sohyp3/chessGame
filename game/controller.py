@@ -8,4 +8,4 @@ def controller(pieceCoordinates,board,turn,movedStatus):
     if isCheck:
         getOutOfCheckMoves = getOutOfCheck(pieceCoordinates, attackerPieces, board, kingCords)
         
-    return getLegalMoves(pieceCoordinates, board,lookingForCheck=False,kingMoves=kingMoves,getOutOfCheckMoves=getOutOfCheckMoves,pinnedLegalMoves=pinnedLegalMoves)
+    return getLegalMoves(pieceCoordinates, board,kingMoves=kingMoves,getOutOfCheckMoves=getOutOfCheckMoves,pinnedLegalMoves=pinnedLegalMoves)

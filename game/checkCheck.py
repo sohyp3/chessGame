@@ -12,13 +12,13 @@ def isKingOnCheck(board,color):
 
             if board[row][col] == kingName(color):
                 kingCords = strC(row, col)
-                kingMoves = getLegalMoves(kingCords, board,lookingForCheck=False,kingMoves=None,getOutOfCheckMoves=None,pinnedLegalMoves=None)
+                kingMoves = getLegalMoves(kingCords, board)
                 board[row][col]= ''
                 
 
     attackPieces = []
     for piece in opponentPieces:
-        moves = getLegalMoves(piece[1], board, lookingForCheck=True, kingMoves=None, getOutOfCheckMoves=None, pinnedLegalMoves=None)
+        moves = getLegalMoves(piece[1], board, lookingForCheck=True)
         if not moves:
             continue
         for move in moves:
@@ -47,7 +47,7 @@ def getOutOfCheck(piece,attackerPieces,board,kingCords):
             pass
         
         else:
-            moves = getLegalMoves(piece, board, lookingForCheck= False, kingMoves=None,getOutOfCheckMoves=None,pinnedLegalMoves=None)
+            moves = getLegalMoves(piece, board)
             for move in moves:
                 # in attackerPieces [0] pieceName [1] pieceCords
                 # first [0] to select the first and only item in the list second [1] to select the cords of the attacker piecew
@@ -132,7 +132,7 @@ def isPinned(piece,turn,board):
         else:
             pinner = list(set(nattackerPieces) - set(oattackerPieces))[0][1]
             pinner = strC(pinner[0],pinner[1])
-            pieceMoves = getLegalMoves(piece, board, lookingForCheck=False, kingMoves=None, getOutOfCheckMoves=None, pinnedLegalMoves=None)
+            pieceMoves = getLegalMoves(piece, board)
             line = getLine(piece, pinner)
             line.append(pinner)
             print(pieceMoves)
