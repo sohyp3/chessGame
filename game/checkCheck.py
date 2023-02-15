@@ -25,7 +25,6 @@ def isKingOnCheck(board,color):
                 isChecked = True
                 if piece not in attackPieces:
                     attackPieces.append(piece)
-                    # print(f'here.. piece {piece[0]} at {piece[1]} is attacking the king king')
                 break
         if kingMoves:
             for kingMove in kingMoves.copy():

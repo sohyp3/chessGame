@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 
 from .extraFunctions import is_ajax
-from .legalMoves import moveController ,getLegalMoves, kingLegalMoves, straightLegalMoves, diagonalLegalMoves, knightLegalMoves, pawnLegalMoves, pawnColorMoves, isKingOnCheck
 
 from .controller import controller
 
@@ -144,14 +143,14 @@ def movePieces(oldPlace, newPlace, board,movedStatus):
 
 def resetBoard(request):
     request.session['board'] = [
-            ["r", "", "", "", "", "", "", "r"],
-            ["p", "p", "b", "b", "p", "b", "p", "p"],
-            ["k", "", "", "", "", "", "", ""],
-            ["", "Q", "", "", "", "", "", "Q"],
-            ["", "P", "", "", "", "", "", ""],
+            ["r", "n", "b", "q", "k", "b", "n", "r"],
+            ["p", "p", "p", "p", "p", "p", "p", "p"],
+            ["", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", ""],
             ["P", "P", "P", "P", "P", "P", "P", "P"],
-            ["R", "", "", "", "K", "", "", "R"]
+            ["R", "N", "B", "Q", "K", "B", "N", "R"]
         ]
     request.session['turn'] = True
     request.session['movedStatus'] = [(False,False,False),(False,False,False)]
