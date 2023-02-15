@@ -93,6 +93,9 @@ def movePieces(oldPlace, newPlace, board,movedStatus):
             piece = 'Q'
         else:
             piece = 'q'
+
+
+    # Castling
     # Light Short Castle
     if piece == 'K' and oldCords == 74 and newCords == 77:
         board[7][4] = ""
@@ -145,13 +148,13 @@ def movePieces(oldPlace, newPlace, board,movedStatus):
 def resetBoard(request):
     request.session['board'] = [
             ["k", "", "", "", "", "", "", ""],
+            ["", "", "", "p", "", "", "", ""],
+            ["", "K", "", "", "", "", "", ""],
+            ["", "", "", "", "P", "", "", ""],
             ["", "", "", "", "", "", "", ""],
-            ["", "Q", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", ""],
-            ["", "", "", "", "", "", "", ""],
-            ["P", "P", "P", "P", "P", "P", "P", "P"],
-            ["R", "N", "B", "Q", "K", "B", "N", "R"]
+            ["", "", "", "", "", "", "B", ""]
         ]
     request.session['turn'] = True
     request.session['movedStatus'] = [(False,False,False),(False,False,False)]

@@ -175,6 +175,39 @@ def isStaleMate (color,board):
             staleMate = False
             print(moves)
             break
-    print(staleMate)
     return staleMate
-    
+
+def isDraw(board,color):
+    friendlyPieces = []
+    opponentPieces = []
+    for row in range(8):
+        for col in range(8):
+            if sameColor(color, board[row][col]):
+                friendlyPieces.append((board[row][col],strC(row,col)))
+            if oppositeColor(color, board[row][col]):
+                opponentPieces.append((board[row][col],strC(row,col)))
+
+
+    if len(friendlyPieces) == 1 and len(opponentPieces)== 1:
+        print('draw my guy')
+        return True
+    friendlyStatus = False
+    if len(friendlyPieces) == 2  :
+        if len(opponentPieces) ==2:
+            for piece in friendlyPieces:
+                if 'n' == piece[0].lower or 'b' == piece[0].lower():
+                    friendlyStatus = True
+            if friendlyStatus:
+                for piece in opponentPieces:
+                    if 'n' == piece[0].lower or 'b' == piece[0].lower():
+                        print('also draw')
+                        return True
+        if len(opponentPieces) == 1:
+            for piece in friendlyPieces:
+                if 'n' == piece[0].lower or 'b' == piece[0].lower():
+                    print('draw')
+                    return True  
+    if len(friendlyPieces) == 1 and len(opponentPieces) == 2:
+        for piece in opponentPieces:
+            if 'n' == piece[0].lower or 'b' == piece[0].lower():
+                print(' draw toooo')
