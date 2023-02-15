@@ -5,17 +5,25 @@ body {
 button {
     display: inline-block;
     background: rgb(159, 189, 183);
-    font-size: 1.125rem; 
-    padding: 1em 2em; 
+    font-size: 1.125rem;
+    padding: 1em 2em;
     color: white;
     text-decoration: none;
     text-transform: uppercase;
     border-radius: 12px;
 }
-a{
-    color:#222;
+
+a {
+    color: #222;
     text-decoration: none;
 }
+
+.container {
+    display: flex;
+    justify-content: center;
+}
+
+
 .chessboard {
     width: 640px;
     height: 640px;
@@ -75,14 +83,60 @@ a{
 
 .resetButton {
     position: absolute;
-    bottom: 20%;
-    right:30%;
+    bottom: 3%;
+    right: 30%;
     left: 30%;
 }
 
-.container {
-    display: flex;
+
+.difContainer{
+    position: relative;
+}
+.top-status-bar{
+    position: relative;
+    top: 0px;
+}
+.bottom-status-bar{
+    position: relative;
+    bottom: 0px;
+}
+
+.status-bar {
+    right: 30%;
+    left: 30%;
+    background-color: #333;
+    height: 50px;
+    
+    align-items: center;
     justify-content: center;
+}
+.captured-pieces h2 {
+    margin-right: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: aliceblue;
+
+}
+
+
+.captured-pieces {
+    display: flex;
+    align-items: center;
+}
+
+.captured-piece {
+    width: 50px;
+    height: 50px;
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #fff;
+}
+
+.captured-piece img {
+    max-width: 100%;
+    max-height: 100%;
 }
 
 .turns {

@@ -12,7 +12,9 @@
       href="{% static 'chess.png' %}"
     />
   </head>
+
   <body>
+  
     <button class="resetButton">
       <a href="{% url 'resetBoard' %}">Reset The Board</a>
     </button>
@@ -20,22 +22,44 @@
     <div class="container">
       <h1 class="turns" id="turns">White Starts</h1>
     </div>
+    <div class="difContainer">
+
+
+      <div class="top-status-bar status-bar">
+        <div id="darkStatus" class="captured-pieces">
+          <h2>Captured Pieces:</h2>
+  
+        </div>
+      </div>
     <div class="container" id="boardContainer">
       <div class="chessboard" id="board"></div>
     </div>
 
-    {%csrf_token%}
+    <div class="bottom-status-bar status-bar">
 
+      <div id="lightStatus" class="captured-pieces">
+        <h2>Captured Pieces:</h2>
+
+      </div>
+    </div>
+
+
+
+  </div>
+
+    {%csrf_token%}
 
     <div class="popup" id="popup-1">
       <div class="overlay"></div>
       <div class="content">
         <div class="close-btn" onclick="togglePopup()">&times;</div>
         <h1 id="winner">Title</h1>
-        <a><button class="">
-          <a href="{% url 'resetBoard' %}">New Game!</a>
-        </button>
-      </a>      </div>
+        <a
+          ><button class="">
+            <a href="{% url 'resetBoard' %}">New Game!</a>
+          </button>
+        </a>
+      </div>
     </div>
 
     <script src="{% static 'js/app.js'%}"></script>

@@ -50,6 +50,7 @@ def board(request):
     if 'captureStatus' in request.session:
         captureStatus = request.session['captureStatus']
     else:
+        # 0 for dark | 1 for light
         request.session['captureStatus'] = [(),()]
         enPassant = request.session['captureStatus']
 
@@ -67,10 +68,10 @@ def board(request):
 
         if square:
             moves, checkMate,draw = controller(square, board, turn,movedStatus,enPassant)
-            return JsonResponse({'moves': moves,'checkMate':checkMate, 'draw':draw})
+            return JsonResponse({'moves': moves,'checkMate':checkMate, 'draw':draw, 'captureStatus':captureStatus})
 
         if newSquare:
-            request.session['board'] = movePieces(oldSquare, newSquare, board,movedStatus,enPassant)
+            request.session['board'] = movePieces(oldSquare, newSquare, board,movedStatus,enPassant,captureStatus)
             request.session['turn'] = not request.session['turn']
             turn = request.session['turn']
             newRs= {
@@ -82,7 +83,7 @@ def board(request):
         return JsonResponse(jsResponseInfo)
 
 
-def movePieces(oldPlace, newPlace, board,movedStatus,enPassant):
+def movePieces(oldPlace, newPlace, board,movedStatus,enPassant,captureStatus):
 
 # check for legal moves
 
@@ -101,11 +102,15 @@ def movePieces(oldPlace, newPlace, board,movedStatus,enPassant):
     base = pawnColorMoves(color)[1]
 
     piece = promotionHandler(piece, base, dest, color, nY)    
-    enPassantHandler(oldPlace, newPlace, board,base,dest,enPassant)
+    enPassantHandler(oldPlace, newPlace, board,base,dest,enPassant,captureStatus)
     if castleHandler(oldPlace, newPlace, movedStatus, board):
+        if board[nY][nX]:
+            if color:
+                captureStatus[1] += board[nY][nX]
+            else:
+                captureStatus[0] += board[nY][nX]
         board[oY][oX] = ""
         board[nY][nX] = piece
-
 
     return board
 

@@ -76,6 +76,7 @@ function getMoves(sqId) {
             }
             highlightAvailableMoves(res.moves)
 
+            drawcaptureStatus(res.captureStatus)
         },
 
         cache: false,
@@ -290,6 +291,37 @@ function checkMateHandler(checker) {
         win = 'Draw'
     }
     document.getElementById("winner").innerText = win
+}
+
+function drawcaptureStatus(captureStatus) {
+    let darkStatus = document.getElementById('darkStatus')
+    let lightStatus = document.getElementById('lightStatus')
+
+    darkStatus.innerHTML = '<h2>Captured Pieces:</h2>'
+    lightStatus.innerHTML = '<h2>Captured Pieces:</h2>'
+    console.log(captureStatus)
+    // Dark
+
+
+    for (let i = 0; i < captureStatus[0].length; i++) {
+        let image = document.createElement('img')
+        image.classList.add('captured-piece')
+        image.src = drawImages(captureStatus[0][i])
+
+        darkStatus.appendChild(image)
+
+    }
+
+
+    // Light
+
+    for (let i = 0; i < captureStatus[1].length; i++) {
+        let image = document.createElement('img')
+        image.classList.add('captured-piece')
+        image.src = drawImages(captureStatus[1][i])
+        lightStatus.appendChild(image)
+
+    }
 }
 
 function togglePopup() {

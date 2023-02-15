@@ -7,7 +7,7 @@ def promotionHandler(piece,base,dest,color,nY):
             piece = 'q'
     return piece
 
-def enPassantHandler(oldPlace,newPlace,board,base,dest,enPassant):
+def enPassantHandler(oldPlace,newPlace,board,base,dest,enPassant,captureStatus):
     oX = int(oldPlace[1])
     oY = int(oldPlace[0])
 
@@ -27,6 +27,11 @@ def enPassantHandler(oldPlace,newPlace,board,base,dest,enPassant):
         enPassant[2] = ''
 
     if piece.lower() == 'p' and oX != nX and board[nY][nX] == '':
+    
+        if color:
+            captureStatus[1] += 'p'
+        else:
+            captureStatus[0] += 'P'
         board[nY-(dest)][nX] = ''
 
 def castleHandler(oldPlace,newPlace,movedStatus,board):
