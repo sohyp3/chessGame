@@ -15,6 +15,7 @@ def getLegalMoves(pieceCoordinates,board,**kwargs):
     getOutOfCheckMoves = None
     pinnedLegalMoves = None
     castleMoves = None
+    enPassantMove = None
 
     if 'lookingForCheck' in kwargs:
         lookingForCheck = kwargs['lookingForCheck']
@@ -26,6 +27,9 @@ def getLegalMoves(pieceCoordinates,board,**kwargs):
         pinnedLegalMoves = kwargs['pinnedLegalMoves']        
     if 'castleMoves' in kwargs:
         castleMoves = kwargs['castleMoves']
+    if 'enPassantMove' in kwargs:
+        enPassantMove = kwargs['enPassantMove']
+    
 
     moves = []
     if getOutOfCheckMoves != None:
@@ -36,7 +40,8 @@ def getLegalMoves(pieceCoordinates,board,**kwargs):
 
         if pieceName.lower() == 'p':
             moves = pawnLegalMoves(cords, board, pieceName.isupper(), lookingForCheck)
-
+            if enPassantMove != None:
+                moves.append(enPassantMove)
         if pieceName.lower() == 'n':
             moves = knightLegalMoves(pieceCoordinates, board, pieceName.isupper(), lookingForCheck)
         

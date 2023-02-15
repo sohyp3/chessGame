@@ -44,7 +44,7 @@ def board(request):
     if 'enPassant' in request.session:
         enPassant = request.session['enPassant']
     else:
-        request.session['enPassant'] = False,""
+        request.session['enPassant'] = False,"",""
         enPassant = request.session['enPassant']
 
 
@@ -105,9 +105,16 @@ def movePieces(oldPlace, newPlace, board,movedStatus,enPassant):
     if piece.lower() == 'p' and oY == base and nY == base + (dest * 2):
         enPassant[0] = True
         enPassant[1] = nY
+        enPassant[2] = nX
     else:
         enPassant[0] = False
         enPassant[1] = ''
+        enPassant[2] = ''
+
+    if piece.lower() == 'p' and oX != nX and board[nY][nX] == '':
+        board[nY-(dest)][nX] = ''
+
+
 
     # Castling
     # Light Short Castle
@@ -162,10 +169,10 @@ def movePieces(oldPlace, newPlace, board,movedStatus,enPassant):
 def resetBoard(request):
     request.session['board'] = [
             ["k", "", "", "", "", "", "", ""],
-            ["", "", "", "p", "", "", "", ""],
+            ["", "", "", "", "", "p", "", ""],
             ["", "K", "", "", "", "", "", ""],
             ["", "", "", "", "P", "", "", ""],
-            ["", "", "", "", "", "", "p", ""],
+            ["", "", "", "p", "", "", "p", ""],
             ["", "", "", "", "", "", "", ""],
             ["", "", "", "", "", "P", "", ""],
             ["", "", "", "", "", "", "B", ""]
@@ -173,6 +180,6 @@ def resetBoard(request):
     request.session['turn'] = True
     request.session['movedStatus'] = [(False,False,False),(False,False,False)]
 
-    request.session['enPassant'] = False,""
+    request.session['enPassant'] = False,"",""
 
     return redirect('boardView')

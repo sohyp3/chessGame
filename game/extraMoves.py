@@ -1,4 +1,4 @@
-from .helpers import oppositeColor,strC
+from .helpers import oppositeColor,strC,pawnColorMoves
 from .getLegalMoves import getLegalMoves
 
 def castleing(movedStatus,color,board):
@@ -90,7 +90,13 @@ def enPassantHandler(piece,enPassant,color,board):
     x = int(piece[1])
     y = int(piece[0])
 
+    dest = pawnColorMoves(color)[0]
     if enPassant[0]:
-        print(enPassant)
-        if y == enPassant[1]:
-            print('en passantable')
+        if y == enPassant[1] :
+            if x+1 == enPassant[2] or x-1 == enPassant[2]:
+                if x> enPassant[2]:
+                    return strC(y+dest, x-1)
+                else:
+                    return strC(y+dest,x+1)
+
+    return None

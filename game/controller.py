@@ -3,21 +3,27 @@ from .getLegalMoves import getLegalMoves
 from .extraMoves import castleing,enPassantHandler
 
 def controller(pieceCoordinates,board,turn,movedStatus,enPassant):
-    isCheck, kingMoves, kingCords, attackerPieces= isKingOnCheck(board, turn)
     getOutOfCheckMoves = None
+    castleMoves = None
+    enPassantMove = None
+    isCheck, kingMoves, kingCords, attackerPieces= isKingOnCheck(board, turn)
     pinnedLegalMoves = isPinned(pieceCoordinates, turn, board)
+    
     if isCheck:
         getOutOfCheckMoves = getOutOfCheck(pieceCoordinates, attackerPieces, board, kingCords)
-    castleMoves = None
-
+    
+    # Castling Moves
     if pieceCoordinates == '74':
         castleMoves = castleing(movedStatus, turn, board)
     elif pieceCoordinates == '04':
         castleMoves = castleing(movedStatus, turn, board)
-
+    #  En Passant Moves
     if enPassant:
-        enPassantHandler(pieceCoordinates,enPassant, turn,board)
-    
+        move = enPassantHandler(pieceCoordinates,enPassant, turn,board)
+        if move != None:
+            enPassantMove = move
+
+    # Draw Moves
     if isCheck and kingMoves == []:
         if isCheckmated(turn,attackerPieces,board,kingCords):
             return [],True,False
@@ -26,4 +32,6 @@ def controller(pieceCoordinates,board,turn,movedStatus,enPassant):
             return [],False,True
     if isDraw(board, turn):
         return [],False,True
-    return getLegalMoves(pieceCoordinates, board,kingMoves=kingMoves,getOutOfCheckMoves=getOutOfCheckMoves,pinnedLegalMoves=pinnedLegalMoves,castleMoves=castleMoves),False,False
+
+    # ----
+    return getLegalMoves(pieceCoordinates, board,kingMoves=kingMoves,getOutOfCheckMoves=getOutOfCheckMoves,pinnedLegalMoves=pinnedLegalMoves,castleMoves=castleMoves,enPassantMove = enPassantMove),False,False
