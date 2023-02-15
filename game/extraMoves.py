@@ -11,6 +11,7 @@ def castleing(movedStatus,color,board):
     # Light
     if color:
         # Short Castle (king side)
+        lightShort = True
         if not movedStatus[1][1] and not movedStatus[1][2] and board[7][5] == '' and board[7][6] =='' and board[7][7]=='R':
             for row in range(8):
                 for col in range(8):
@@ -19,30 +20,29 @@ def castleing(movedStatus,color,board):
             
             for piece in opponentPieces:
                 moves = getLegalMoves(piece[1], board)
-                for move in moves:
-                    if move == board[7][4] or move == board[7][5] or move == board[7][6]:
-                        break
-                    else:
-                        lightShort = True
-                        break
+                if '74' in moves or '75' in moves or '76' in moves:
+                    lightShort = False
+                    break
+
+
             # Long Caslte (queen side)
+        lightLong = True
+        opponentPieces = []
         if not movedStatus[1][1] and not movedStatus[1][0] and board[7][1] == '' and board[7][2] =='' and board[7][3] =='' and board[7][0]=='R':
             for row in range(8):
                 for col in range(8):
                     if oppositeColor(color,board[row][col]):
                         opponentPieces.append(((board[row][col]),strC(row,col)))
-            
             for piece in opponentPieces:
                 moves = getLegalMoves(piece[1], board)
-                for move in moves:
-                    if move == board[7][4] or move == board[7][3] or move == board[7][2]:
-                        break
-                    else:
-                        lightLong = True
-                        break
+                if '74' in moves or '73' in moves or '72' in moves:
+                    lightLong = False
+                    break
+        
         # Dark
     elif not color:
         # Short Castle (king side)
+        darkShort = True
         if not movedStatus[0][1] and not movedStatus[0][2] and board[0][5] == '' and board[0][6] =='' and board[0][7]=='r':
             for row in range(8):
                 for col in range(8):
@@ -50,13 +50,13 @@ def castleing(movedStatus,color,board):
                         opponentPieces.append(((board[row][col]),strC(row,col)))
             for piece in opponentPieces:
                 moves = getLegalMoves(piece[1], board)
-                for move in moves:
-                    if move == board[0][4] or move == board[0][5] or move == board[0][6]:
-                        break
-                    else:
-                        darkShort = True
-                        break
-            # Long Caslte (queen side)
+                if '04' in moves or '05' in moves or '06' in moves:
+                    darkShort = False
+                    break
+                    
+        # Long Caslte (queen side)
+        darkLong = True
+        opponentPieces = []
         if not movedStatus[0][1] and not movedStatus[0][0] and board[0][1] == '' and board[0][2] =='' and board[0][3] =='' and board[0][0]=='r':
             for row in range(8):
                 for col in range(8):
@@ -65,12 +65,9 @@ def castleing(movedStatus,color,board):
             
             for piece in opponentPieces:
                 moves = getLegalMoves(piece[1], board)
-                for move in moves:
-                    if move == board[0][4] or move == board[0][3] or move == board[0][2]:
-                        break
-                    else:
-                        darkLong = True
-                        break        
+                if '04' in moves or '03' in moves or '02' in moves:
+                    darkLong = False
+                    break
     
     if lightShort == True:
         availableMoves.append('77')
@@ -83,7 +80,6 @@ def castleing(movedStatus,color,board):
     
     if availableMoves == []:
         availableMoves = None
-
     return availableMoves
 
 def enPassantHandler(piece,enPassant,color,board):
