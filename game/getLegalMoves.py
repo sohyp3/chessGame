@@ -28,7 +28,6 @@ def getLegalMoves(pieceCoordinates,board,**kwargs):
         castleMoves = kwargs['castleMoves']
 
     moves = []
-    # print(f'{cords}-{pieceName}')
     if getOutOfCheckMoves != None:
         moves = getOutOfCheckMoves
     elif pinnedLegalMoves != None:

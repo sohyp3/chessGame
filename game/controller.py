@@ -1,4 +1,4 @@
-from .checkCheck import isKingOnCheck,getOutOfCheck,isPinned,isCheckmated
+from .checkCheck import isKingOnCheck,getOutOfCheck,isPinned,isCheckmated,isStaleMate
 from .getLegalMoves import getLegalMoves
 from .extraMoves import castleing
 
@@ -17,6 +17,9 @@ def controller(pieceCoordinates,board,turn,movedStatus):
 
     if isCheck and kingMoves == []:
         if isCheckmated(turn,attackerPieces,board,kingCords):
-            return [],True
+            return [],True,False
+    if not isCheck and kingMoves == []:
+        if isStaleMate(turn, board):
+            return [],False,True
 
-    return getLegalMoves(pieceCoordinates, board,kingMoves=kingMoves,getOutOfCheckMoves=getOutOfCheckMoves,pinnedLegalMoves=pinnedLegalMoves,castleMoves=castleMoves),False
+    return getLegalMoves(pieceCoordinates, board,kingMoves=kingMoves,getOutOfCheckMoves=getOutOfCheckMoves,pinnedLegalMoves=pinnedLegalMoves,castleMoves=castleMoves),False,False

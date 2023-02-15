@@ -69,7 +69,10 @@ function getMoves(sqId) {
         data: formdata,
         success: function (res) {
                 if (res.checkMate == true){
-                    checkMateHandler()
+                    checkMateHandler('c')
+                }
+                if (res.staleMate == true){
+                    checkMateHandler('s')
                 }
                 highlightAvailableMoves(res.moves)
             
@@ -272,9 +275,10 @@ function upInverse(switcher, string) {
 
 }
 
-function checkMateHandler(){
+function checkMateHandler(checker){
     
     togglePopup()
+    if (checker == 'c'){
     let win
     if (window.turn == true){
         win = 'black won by checkmate'
@@ -282,9 +286,13 @@ function checkMateHandler(){
     else{
         win = 'white won by checkmate'
     }
+}
+    if (checker == 's'){
+        win = 'Draw'
+    }
     document.getElementById("winner").innerText = win
 }
 
 function togglePopup(){
     document.getElementById("popup-1").classList.toggle("active");
-  }
+}

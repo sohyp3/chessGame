@@ -2,6 +2,20 @@ body {
     background-color: #333;
 }
 
+button {
+    display: inline-block;
+    background: rgb(159, 189, 183);
+    font-size: 1.125rem; 
+    padding: 1em 2em; 
+    color: white;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-radius: 12px;
+}
+a{
+    color:#222;
+    text-decoration: none;
+}
 .chessboard {
     width: 640px;
     height: 640px;
@@ -61,8 +75,9 @@ body {
 
 .resetButton {
     position: absolute;
-    right: 20%;
-    top: 5%;
+    bottom: 20%;
+    right:30%;
+    left: 30%;
 }
 
 .container {

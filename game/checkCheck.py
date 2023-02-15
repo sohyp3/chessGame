@@ -142,7 +142,7 @@ def isPinned(piece,turn,board):
 
 
 def isCheckmated(color,attackerPieces,board,kingCords):
-    checkMate = False
+    checkMate = True
     if len(attackerPieces) > 1:
         checkMate = True
     friendlyPieces = []
@@ -152,10 +152,29 @@ def isCheckmated(color,attackerPieces,board,kingCords):
                 friendlyPieces.append((board[row][col],strC(row,col)))
     
     for piece in friendlyPieces:
-        checkMate = True
 
         moves = getOutOfCheck(piece[1], attackerPieces, board, kingCords)
         if moves != []:
             checkMate = False
             break
     return checkMate
+
+def isStaleMate (color,board):
+    staleMate = True
+    friendlyPieces = []
+    for row in range(8):
+        for col in range(8):
+            if sameColor(color, board[row][col]):
+                friendlyPieces.append((board[row][col],strC(row,col)))
+
+    for piece in friendlyPieces:
+        if piece[0].lower() == 'k':
+            continue
+        moves = getLegalMoves(piece[1], board)
+        if moves !=[]:
+            staleMate = False
+            print(moves)
+            break
+    print(staleMate)
+    return staleMate
+    

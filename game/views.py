@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from .extraFunctions import is_ajax
 
 from .controller import controller
+from .helpers import pawnColorMoves
 
 def mainView(request):
     return render(request, 'mainPage.html')
@@ -52,8 +53,8 @@ def board(request):
         }
 
         if square:
-            moves, checkMate = controller(square, board, turn,movedStatus)
-            return JsonResponse({'moves': moves,'checkMate':checkMate })
+            moves, checkMate,staleMate = controller(square, board, turn,movedStatus)
+            return JsonResponse({'moves': moves,'checkMate':checkMate, 'staleMate':staleMate})
 
         if newSquare:
             request.session['board'] = movePieces(oldSquare, newSquare, board,movedStatus)
@@ -143,9 +144,9 @@ def movePieces(oldPlace, newPlace, board,movedStatus):
 
 def resetBoard(request):
     request.session['board'] = [
-            ["r", "n", "b", "q", "k", "b", "n", "r"],
-            ["p", "p", "p", "p", "p", "p", "p", "p"],
+            ["k", "", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", ""],
+            ["", "Q", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", ""],
