@@ -85,3 +85,12 @@ def castleing(movedStatus,color,board):
         availableMoves = None
 
     return availableMoves
+
+def enPassantHandler(piece,enPassant,color,board):
+    x = int(piece[1])
+    y = int(piece[0])
+
+    if enPassant[0]:
+        print(enPassant)
+        if y == enPassant[1]:
+            print('en passantable')

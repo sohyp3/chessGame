@@ -41,6 +41,13 @@ def board(request):
         request.session['movedStatus'] = [(False,False,False),(False,False,False)]
         movedStatus = request.session['movedStatus']
 
+    if 'enPassant' in request.session:
+        enPassant = request.session['enPassant']
+    else:
+        request.session['enPassant'] = False,""
+        enPassant = request.session['enPassant']
+
+
     if is_ajax(request):
         square = request.POST.get('sqId')
 
@@ -53,11 +60,11 @@ def board(request):
         }
 
         if square:
-            moves, checkMate,staleMate = controller(square, board, turn,movedStatus)
+            moves, checkMate,staleMate = controller(square, board, turn,movedStatus,enPassant)
             return JsonResponse({'moves': moves,'checkMate':checkMate, 'staleMate':staleMate})
 
         if newSquare:
-            request.session['board'] = movePieces(oldSquare, newSquare, board,movedStatus)
+            request.session['board'] = movePieces(oldSquare, newSquare, board,movedStatus,enPassant)
             request.session['turn'] = not request.session['turn']
             turn = request.session['turn']
             newRs= {
@@ -69,7 +76,7 @@ def board(request):
         return JsonResponse(jsResponseInfo)
 
 
-def movePieces(oldPlace, newPlace, board,movedStatus):
+def movePieces(oldPlace, newPlace, board,movedStatus,enPassant):
 
 # check for legal moves
 
@@ -94,6 +101,13 @@ def movePieces(oldPlace, newPlace, board,movedStatus):
         else:
             piece = 'q'
 
+    # En Passant Handler
+    if piece.lower() == 'p' and oY == base and nY == base + (dest * 2):
+        enPassant[0] = True
+        enPassant[1] = nY
+    else:
+        enPassant[0] = False
+        enPassant[1] = ''
 
     # Castling
     # Light Short Castle
@@ -151,11 +165,14 @@ def resetBoard(request):
             ["", "", "", "p", "", "", "", ""],
             ["", "K", "", "", "", "", "", ""],
             ["", "", "", "", "P", "", "", ""],
+            ["", "", "", "", "", "", "p", ""],
             ["", "", "", "", "", "", "", ""],
-            ["", "", "", "", "", "", "", ""],
-            ["", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "P", "", ""],
             ["", "", "", "", "", "", "B", ""]
         ]
     request.session['turn'] = True
     request.session['movedStatus'] = [(False,False,False),(False,False,False)]
+
+    request.session['enPassant'] = False,""
+
     return redirect('boardView')
