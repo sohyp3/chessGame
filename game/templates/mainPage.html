@@ -25,6 +25,19 @@
     </div>
 
     {%csrf_token%}
+
+
+    <div class="popup" id="popup-1">
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="close-btn" onclick="togglePopup()">&times;</div>
+        <h1 id="winner">Title</h1>
+        <a><button class="">
+          <a href="{% url 'resetBoard' %}">New Game!</a>
+        </button>
+      </a>      </div>
+    </div>
+
     <script src="{% static 'js/app.js'%}"></script>
   </body>
 </html>

@@ -53,7 +53,8 @@ def board(request):
         }
 
         if square:
-            return JsonResponse({'moves': controller(square, board, turn,movedStatus)})
+            moves, checkMate = controller(square, board, turn,movedStatus)
+            return JsonResponse({'moves': moves,'checkMate':checkMate })
 
         if newSquare:
             request.session['board'] = movePieces(oldSquare, newSquare, board,movedStatus)
@@ -120,7 +121,6 @@ def movePieces(oldPlace, newPlace, board,movedStatus):
         board[oY][oX] = ""
         board[nY][nX] = piece
 
-    print(oldCords)
 
     # Check if kings or rooks moved (for castling)
     if oY == 0 and oX ==0:
@@ -144,11 +144,11 @@ def movePieces(oldPlace, newPlace, board,movedStatus):
 
 def resetBoard(request):
     request.session['board'] = [
-            ["r", "", "", "", "k", "", "", "r"],
-            ["p", "p", "p", "p", "p", "b", "p", "p"],
-            ["", "", "", "", "", "", "", ""],
-            ["", "", "", "", "", "", "", "Q"],
-            ["", "", "", "", "", "", "", ""],
+            ["r", "", "", "", "", "", "", "r"],
+            ["p", "p", "b", "b", "p", "b", "p", "p"],
+            ["k", "", "", "", "", "", "", ""],
+            ["", "Q", "", "", "", "", "", "Q"],
+            ["", "P", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", ""],
             ["P", "P", "P", "P", "P", "P", "P", "P"],
             ["R", "", "", "", "K", "", "", "R"]

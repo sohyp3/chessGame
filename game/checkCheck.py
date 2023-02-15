@@ -1,4 +1,4 @@
-from .helpers import strC, kingName,oppositeColor
+from .helpers import strC, kingName,oppositeColor,sameColor
 from .getLegalMoves import getLegalMoves
 def isKingOnCheck(board,color):
     opponentPieces = []
@@ -16,7 +16,6 @@ def isKingOnCheck(board,color):
                 board[row][col]= ''
                 
 
-    attackPieces = []
     for piece in opponentPieces:
         moves = getLegalMoves(piece[1], board, lookingForCheck=True)
         if not moves:
@@ -28,10 +27,11 @@ def isKingOnCheck(board,color):
                     attackPieces.append(piece)
                     # print(f'here.. piece {piece[0]} at {piece[1]} is attacking the king king')
                 break
-            if kingMoves:
-                for kingMove in kingMoves:
-                    if move == kingMove:
-                        kingMoves.remove(kingMove)
+        if kingMoves:
+            for kingMove in kingMoves.copy():
+                if kingMove in moves:
+                    kingMoves.remove(kingMove)
+
 
     # Setting the King on the board again
     board[int(kingCords[0])][int(kingCords[1])] = kingName(color)
@@ -135,9 +135,28 @@ def isPinned(piece,turn,board):
             pieceMoves = getLegalMoves(piece, board)
             line = getLine(piece, pinner)
             line.append(pinner)
-            print(pieceMoves)
             for move in pieceMoves:
                 if move in line:
                     availableMoves.append(move)
             isPiecePinned = True
         return availableMoves
+
+
+def isCheckmated(color,attackerPieces,board,kingCords):
+    checkMate = False
+    if len(attackerPieces) > 1:
+        checkMate = True
+    friendlyPieces = []
+    for row in range(8):
+        for col in range(8):
+            if sameColor(color, board[row][col]):
+                friendlyPieces.append((board[row][col],strC(row,col)))
+    
+    for piece in friendlyPieces:
+        checkMate = True
+
+        moves = getOutOfCheck(piece[1], attackerPieces, board, kingCords)
+        if moves != []:
+            checkMate = False
+            break
+    return checkMate

@@ -68,7 +68,11 @@ function getMoves(sqId) {
         enctype: 'multipart/form-data',
         data: formdata,
         success: function (res) {
-            highlightAvailableMoves(res.moves)
+                if (res.checkMate == true){
+                    checkMateHandler()
+                }
+                highlightAvailableMoves(res.moves)
+            
         },
 
         cache: false,
@@ -267,3 +271,20 @@ function upInverse(switcher, string) {
     }
 
 }
+
+function checkMateHandler(){
+    
+    togglePopup()
+    let win
+    if (window.turn == true){
+        win = 'black won by checkmate'
+    }
+    else{
+        win = 'white won by checkmate'
+    }
+    document.getElementById("winner").innerText = win
+}
+
+function togglePopup(){
+    document.getElementById("popup-1").classList.toggle("active");
+  }
