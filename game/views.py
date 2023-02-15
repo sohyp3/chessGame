@@ -116,14 +116,14 @@ def movePieces(oldPlace, newPlace, board,movedStatus,enPassant,captureStatus):
 
 def resetBoard(request):
     request.session['board'] = [
-            ["r", "n", "b", "q", "k", "b", "n", ""],
-            ["p", "p", "p", "p", "p", "p", "p", "P"],
+            ["r", "n", "b", "q", "k", "b", "n", "r"],
+            ["p", "p", "p", "p", "p", "p", "p", "p"],
             ["", "", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", ""],
             ["P", "P", "P", "P", "P", "P", "P", "P"],
-            ["R", "", "", "", "K", "", "", "R"]
+            ["R", "N", "B", "Q", "K", "B", "N", "R"]
         ]
     request.session['turn'] = True
     request.session['movedStatus'] = [(False,False,False),(False,False,False)]
