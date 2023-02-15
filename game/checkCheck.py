@@ -173,7 +173,6 @@ def isStaleMate (color,board):
         moves = getLegalMoves(piece[1], board)
         if moves !=[]:
             staleMate = False
-            print(moves)
             break
     return staleMate
 
@@ -189,7 +188,6 @@ def isDraw(board,color):
 
 
     if len(friendlyPieces) == 1 and len(opponentPieces)== 1:
-        print('draw my guy')
         return True
     friendlyStatus = False
     if len(friendlyPieces) == 2  :
@@ -200,14 +198,12 @@ def isDraw(board,color):
             if friendlyStatus:
                 for piece in opponentPieces:
                     if 'n' == piece[0].lower or 'b' == piece[0].lower():
-                        print('also draw')
                         return True
         if len(opponentPieces) == 1:
             for piece in friendlyPieces:
                 if 'n' == piece[0].lower or 'b' == piece[0].lower():
-                    print('draw')
                     return True  
     if len(friendlyPieces) == 1 and len(opponentPieces) == 2:
         for piece in opponentPieces:
             if 'n' == piece[0].lower or 'b' == piece[0].lower():
-                print(' draw toooo')
+                return True  

@@ -5,7 +5,7 @@ from .extraFunctions import is_ajax
 
 from .controller import controller
 from .helpers import pawnColorMoves
-
+from .handlers import promotionHandler,enPassantHandler,castleHandler
 def mainView(request):
     return render(request, 'mainPage.html')
 
@@ -47,6 +47,12 @@ def board(request):
         request.session['enPassant'] = False,"",""
         enPassant = request.session['enPassant']
 
+    if 'captureStatus' in request.session:
+        captureStatus = request.session['captureStatus']
+    else:
+        request.session['captureStatus'] = [(),()]
+        enPassant = request.session['captureStatus']
+
 
     if is_ajax(request):
         square = request.POST.get('sqId')
@@ -60,8 +66,8 @@ def board(request):
         }
 
         if square:
-            moves, checkMate,staleMate = controller(square, board, turn,movedStatus,enPassant)
-            return JsonResponse({'moves': moves,'checkMate':checkMate, 'staleMate':staleMate})
+            moves, checkMate,draw = controller(square, board, turn,movedStatus,enPassant)
+            return JsonResponse({'moves': moves,'checkMate':checkMate, 'draw':draw})
 
         if newSquare:
             request.session['board'] = movePieces(oldSquare, newSquare, board,movedStatus,enPassant)
@@ -91,95 +97,33 @@ def movePieces(oldPlace, newPlace, board,movedStatus,enPassant):
     nX = int(newPlace[1])
     nY = int(newPlace[0])
 
-    # Promotion
     dest = pawnColorMoves(color)[0]
     base = pawnColorMoves(color)[1]
-    # the promotion square
-    if piece.lower() == 'p' and nY == 6 + (base * dest):
-        if color:
-            piece = 'Q'
-        else:
-            piece = 'q'
 
-    # En Passant Handler
-    if piece.lower() == 'p' and oY == base and nY == base + (dest * 2):
-        enPassant[0] = True
-        enPassant[1] = nY
-        enPassant[2] = nX
-    else:
-        enPassant[0] = False
-        enPassant[1] = ''
-        enPassant[2] = ''
-
-    if piece.lower() == 'p' and oX != nX and board[nY][nX] == '':
-        board[nY-(dest)][nX] = ''
-
-
-
-    # Castling
-    # Light Short Castle
-    if piece == 'K' and oldCords == 74 and newCords == 77:
-        board[7][4] = ""
-        board[7][7] = ""
-        board[7][5] = "R"
-        board[7][6] = 'K'
-    # Light Long Castle
-    elif piece == 'K' and oldCords == 74 and newCords == 70:
-        board[7][4] = ""
-        board[7][0] = ""
-        board[7][3] = "R"
-        board[7][2] = 'K'      
-    # Dark short Castle
-    elif piece == 'k' and oldCords == 4 and newCords == 7:
-        board[0][4] = ""
-        board[0][7] = ""
-        board[0][5] = "r"
-        board[0][6] = 'k'
-    # Dark Long Castle
-    elif piece == 'k' and oldCords == 4 and newCords == 0:
-        board[0][4] = ""
-        board[0][0] = ""
-        board[0][3] = "r"
-        board[0][2] = 'k'            
-    else:
+    piece = promotionHandler(piece, base, dest, color, nY)    
+    enPassantHandler(oldPlace, newPlace, board,base,dest,enPassant)
+    if castleHandler(oldPlace, newPlace, movedStatus, board):
         board[oY][oX] = ""
         board[nY][nX] = piece
 
 
-    # Check if kings or rooks moved (for castling)
-    if oY == 0 and oX ==0:
-        movedStatus[0][0] = True
-    elif oY == 0 and oX == 4:
-        movedStatus[0][1] = True
-    elif oY == 0 and oX == 7:
-        movedStatus[0][2] = True
-
-    if oY == 7 and oX == 0:
-        movedStatus[1][0] = True
-    elif oY == 7 and oX == 4:
-        movedStatus[1][1] = True
-    elif oY == 7 and oX == 7:
-        movedStatus[1][2] = True
-
-
-
     return board
-
 
 def resetBoard(request):
     request.session['board'] = [
-            ["k", "", "", "", "", "", "", ""],
-            ["", "", "", "", "", "p", "", ""],
-            ["", "K", "", "", "", "", "", ""],
-            ["", "", "", "", "P", "", "", ""],
-            ["", "", "", "p", "", "", "p", ""],
+            ["r", "n", "b", "q", "k", "b", "n", ""],
+            ["p", "p", "p", "p", "p", "p", "p", "P"],
             ["", "", "", "", "", "", "", ""],
-            ["", "", "", "", "", "P", "", ""],
-            ["", "", "", "", "", "", "B", ""]
+            ["", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", ""],
+            ["P", "P", "P", "P", "P", "P", "P", "P"],
+            ["R", "", "", "", "K", "", "", "R"]
         ]
     request.session['turn'] = True
     request.session['movedStatus'] = [(False,False,False),(False,False,False)]
 
     request.session['enPassant'] = False,"",""
+    request.session['captureStatus'] = [(),()]
 
     return redirect('boardView')

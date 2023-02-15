@@ -3,9 +3,9 @@ async function createBoard() {
     let board = responseInfo.board
 
     window.turn = responseInfo.turn
-    
+
     turn = window.turn
-    
+
     let turns = document.getElementById('turns')
     if (turn == true) {
         turns.innerText = "White's Turn ⚪"
@@ -68,14 +68,14 @@ function getMoves(sqId) {
         enctype: 'multipart/form-data',
         data: formdata,
         success: function (res) {
-                if (res.checkMate == true){
-                    checkMateHandler('c')
-                }
-                if (res.staleMate == true){
-                    checkMateHandler('s')
-                }
-                highlightAvailableMoves(res.moves)
-            
+            if (res.checkMate == true) {
+                checkMateHandler('c')
+            }
+            if (res.draw == true) {
+                checkMateHandler('s')
+            }
+            highlightAvailableMoves(res.moves)
+
         },
 
         cache: false,
@@ -177,7 +177,7 @@ function drawSquares(sqColor, piece, cords, uiNum, uiLet) {
 
 function pieceClickHandler(selectedPiece, selected, highlighted) {
     turn = window.turn
-    
+
     if (selectedPiece.classList.contains('highlightAvailable')) {
         sendNewPlace(selected[0].id, selectedPiece.id)
     }
@@ -275,24 +275,23 @@ function upInverse(switcher, string) {
 
 }
 
-function checkMateHandler(checker){
-    
+function checkMateHandler(checker) {
     togglePopup()
-    if (checker == 'c'){
-    let win
-    if (window.turn == true){
-        win = 'black won by checkmate'
+    let win = ''
+    if (checker == 'c') {
+        if (window.turn == true) {
+            win = 'black won by checkmate'
+        }
+        else {
+            win = 'white won by checkmate'
+        }
     }
-    else{
-        win = 'white won by checkmate'
-    }
-}
-    if (checker == 's'){
+    if (checker == 'd') {
         win = 'Draw'
     }
     document.getElementById("winner").innerText = win
 }
 
-function togglePopup(){
+function togglePopup() {
     document.getElementById("popup-1").classList.toggle("active");
 }
