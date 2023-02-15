@@ -9,3 +9,4 @@ Using Django to do all the calculations in backend and vanilla javascript in the
 2. `pip3 install Django`
 
 **Run it**
+`python3 manage.py runserver`
