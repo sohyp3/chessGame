@@ -57,9 +57,10 @@ def getLegalMoves(pieceCoordinates,board,**kwargs):
         
     if pieceName.lower() == 'k':
         moves = kingLegalMoves(cords, board, pieceName.isupper(), lookingForCheck)
+        if castleMoves != None:
+            moves+=(castleMoves)
+            
         if kingMoves != None:
             moves = kingMoves  
             
-        if castleMoves != None:
-            moves+=(castleMoves)
     return moves
