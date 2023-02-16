@@ -11,8 +11,8 @@ def castleing(movedStatus,color,board):
     # Light
     if color:
         # Short Castle (king side)
-        lightShort = True
         if not movedStatus[1][1] and not movedStatus[1][2] and board[7][5] == '' and board[7][6] =='' and board[7][7]=='R':
+            lightShort = True
             for row in range(8):
                 for col in range(8):
                     if oppositeColor(color,board[row][col]):
@@ -26,9 +26,9 @@ def castleing(movedStatus,color,board):
 
 
             # Long Caslte (queen side)
-        lightLong = True
         opponentPieces = []
         if not movedStatus[1][1] and not movedStatus[1][0] and board[7][1] == '' and board[7][2] =='' and board[7][3] =='' and board[7][0]=='R':
+            lightLong = True
             for row in range(8):
                 for col in range(8):
                     if oppositeColor(color,board[row][col]):
@@ -42,8 +42,8 @@ def castleing(movedStatus,color,board):
         # Dark
     elif not color:
         # Short Castle (king side)
-        darkShort = True
         if not movedStatus[0][1] and not movedStatus[0][2] and board[0][5] == '' and board[0][6] =='' and board[0][7]=='r':
+            darkShort = True
             for row in range(8):
                 for col in range(8):
                     if oppositeColor(color,board[row][col]):
@@ -55,9 +55,9 @@ def castleing(movedStatus,color,board):
                     break
                     
         # Long Caslte (queen side)
-        darkLong = True
         opponentPieces = []
         if not movedStatus[0][1] and not movedStatus[0][0] and board[0][1] == '' and board[0][2] =='' and board[0][3] =='' and board[0][0]=='r':
+            darkLong = True
             for row in range(8):
                 for col in range(8):
                     if oppositeColor(color,board[row][col]):
