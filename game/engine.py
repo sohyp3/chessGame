@@ -1,19 +1,32 @@
 from .helpers import sameColor,strC
+from .getLegalMoves import getLegalMoves
 
 def evaluate(board,color):
-    pieceVale = {
-        'p':10,
-        'n':30,
-        'b':30,
-        'r':50,
-        'q':90,
-        'k':900
+    pieceVal = {
+        'P':1,
+        'N':3,
+        'B':3,
+        'R':5,
+        'Q':9,
+        'K':90,
+        'p':-1,
+        'n':-3,
+        'b':-3,
+        'r':-5,
+        'q':-9,
+        'k':-90,
     }
 
-    if color:
-        return whiteScore - blackScore
-    else:
-        return blackScore- whiteScore
+    whitePieces = allMoves(board, color)
+    blackPieces = allMoves(board, not color)
+
+    pieces = whitePieces + blackPieces
+    evalBar = 0
+
+    for piece in pieces:
+        evalBar += pieceVal[piece[0]]
+    
+    return evalBar
 
 
 def MiniMax(board,depth,color):
@@ -40,4 +53,5 @@ def allMoves(board,color,**kwargs):
             moves.append((piece[1],piece[0],pieceMoves))
 
         
-    return pieces, moves
+    return pieces
+    
