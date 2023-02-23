@@ -89,7 +89,7 @@ function getMoves(sqId) {
 
 // Send the new piece places
 function sendNewPlace(oldID, newID) {
-    const isAi = document.getElementById('isAi')
+    const isAi = document.getElementById('isAi').innerText
     const formdata = new FormData()
     const csrf = document.getElementsByName('csrfmiddlewaretoken')
     formdata.append('csrfmiddlewaretoken', csrf[0].value)

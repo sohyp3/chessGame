@@ -3,10 +3,8 @@ from .getLegalMoves import getLegalMoves
 from .extraMoves import castleing,enPassantHandler
 
 
-from .engine import evaluate
 
 def controller(pieceCoordinates,board,turn,movedStatus,enPassant):
-    evaluate(board, turn)
     getOutOfCheckMoves = None
     castleMoves = None
     enPassantMove = None

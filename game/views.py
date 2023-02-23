@@ -73,7 +73,7 @@ def board(request):
             'turn': turn
         }
         
-        if isAi != 'null' and isAi:
+        if isAi =='ai':
             MiniMax(board, 3, turn, movedStatus, enPassant, captureStatus)
         
         if square:

@@ -31,30 +31,50 @@ def evaluate(board,color):
         evalBar += pieceVal[piece[0]]
     
     return evalBar
-
-# def aiHandler(board,color):
-#     depth = 3
-#     pass
-
     
 def MiniMax(board,depth,color,movedStatus,enPassant,captureStatus):
-    print('?')
     if depth == 0 :
-        return evaluate(board)
+        print('s?')
+        return evaluate(board,color)
 
-    legalMoves = []
     pieces, moves = allMoves(board, color,req = 'all')
-    
-
-    # for piece in moves:
-    #     print(piece)  
+    best_move = ''
     
     if color:
         max_eval = -math.inf
         for move in moves:
-            pass
+            for newPlace in move[2]:
+                oX = int(newPlace[1])
+                oY = int(newPlace[0])
+                oldPiece = board[oY][oX]
+                
+                movePieces(move[1], newPlace, board, movedStatus, enPassant, captureStatus)
+                eval = MiniMax(board, depth-1, not color, movedStatus, enPassant, captureStatus)
+                movePieces(newPlace, move[1], board, movedStatus, enPassant, captureStatus)
+                board[oY][oX] = oldPiece
+                if eval > max_eval:
+                    max_eval = eval
+                    best_move = newPlace
+                max_eval = max(max_eval, eval)
 
+                # print(f"best move is moving {move[0]}  from {move[1]} to {best_move} || {move[2]}")
+        print(eval)
+        return max_eval
+    else:
+        min_eval = math.inf
+        for move in moves:
+            for newPlace in move[2]:
+                oX = int(newPlace[1])
+                oY = int(newPlace[0])
+                oldPiece = board[oY][oX]
 
+                movePieces(move[1], newPlace, board, movedStatus, enPassant, captureStatus)
+                eval = MiniMax(board, depth-1, not color, movedStatus, enPassant, captureStatus)
+                movePieces(newPlace, move[1], board, movedStatus, enPassant, captureStatus)
+                board[oY][oX] = oldPiece
+
+                min_eval = min(min_eval, eval)
+        return min_eval
 
 def allMoves(board,color,**kwargs):
     req = None
