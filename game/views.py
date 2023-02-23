@@ -5,9 +5,17 @@ from .extraFunctions import is_ajax
 from .movePieces import movePieces
 
 from .controller import controller
-def mainView(request):
+
+from .engine import MiniMax
+
+def chooseMode(request):
+    return render(request, 'choosePage.html')
+
+def playLocal(request):
     return render(request, 'mainPage.html')
 
+def playAI(request):
+    return render(request, 'aiPage.html')
 
 def board(request):
     if 'turn' in request.session:
@@ -59,16 +67,18 @@ def board(request):
 
         newSquare = request.POST.get('newSqId')
         oldSquare = request.POST.get('oldSqId')
-
+        isAi = request.POST.get('isAi')
         jsResponseInfo = {
             'board': board,
             'turn': turn
         }
-
+        
+        if isAi != 'null' and isAi:
+            MiniMax(board, 3, turn, movedStatus, enPassant, captureStatus)
+        
         if square:
             moves, checkMate,draw = controller(square, board, turn,movedStatus,enPassant)
             return JsonResponse({'moves': moves,'checkMate':checkMate, 'draw':draw, 'captureStatus':captureStatus})
-
         if newSquare:
             request.session['board'] = movePieces(oldSquare, newSquare, board,movedStatus,enPassant,captureStatus)
             request.session['turn'] = not request.session['turn']
@@ -99,4 +109,4 @@ def resetBoard(request):
     request.session['enPassant'] = False,"",""
     request.session['captureStatus'] = [(),()]
 
-    return redirect('boardView')
+    return redirect('playAI')

@@ -89,13 +89,13 @@ function getMoves(sqId) {
 
 // Send the new piece places
 function sendNewPlace(oldID, newID) {
+    const isAi = document.getElementById('isAi')
     const formdata = new FormData()
     const csrf = document.getElementsByName('csrfmiddlewaretoken')
     formdata.append('csrfmiddlewaretoken', csrf[0].value)
     formdata.append('newSqId', newID)
     formdata.append('oldSqId', oldID)
-
-
+    formdata.append('isAi',isAi)
     $.ajax({
         type: "POST",
         url: "/board",
@@ -299,7 +299,6 @@ function drawcaptureStatus(captureStatus) {
 
     darkStatus.innerHTML = '<h2>Captured Pieces:</h2>'
     lightStatus.innerHTML = '<h2>Captured Pieces:</h2>'
-    console.log(captureStatus)
     // Dark
 
 

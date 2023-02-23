@@ -1,7 +1,7 @@
 from .helpers import sameColor,strC
 from .getLegalMoves import getLegalMoves
 
-# from .views import movePieces
+from .movePieces import movePieces
 
 import math
 
@@ -30,29 +30,29 @@ def evaluate(board,color):
     for piece in pieces:
         evalBar += pieceVal[piece[0]]
     
-    MiniMax(board, 3, color)
-
     return evalBar
 
+# def aiHandler(board,color):
+#     depth = 3
+#     pass
 
-def MiniMax(board,depth,color):
     
+def MiniMax(board,depth,color,movedStatus,enPassant,captureStatus):
+    print('?')
     if depth == 0 :
         return evaluate(board)
 
     legalMoves = []
     pieces, moves = allMoves(board, color,req = 'all')
     
-    print(pieces)
-    print('')
-    print(moves)
 
-    for piece in moves:
-        print(piece)
+    # for piece in moves:
+    #     print(piece)  
     
-    # if color:
-    #     max_eval = -math.inf
-    #     for move in moves:
+    if color:
+        max_eval = -math.inf
+        for move in moves:
+            pass
 
 
 
