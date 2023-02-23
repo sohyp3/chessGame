@@ -1,6 +1,10 @@
 from .helpers import sameColor,strC
 from .getLegalMoves import getLegalMoves
 
+# from .views import movePieces
+
+import math
+
 def evaluate(board,color):
     pieceVal = {
         'P':1,
@@ -26,12 +30,30 @@ def evaluate(board,color):
     for piece in pieces:
         evalBar += pieceVal[piece[0]]
     
+    MiniMax(board, 3, color)
+
     return evalBar
 
 
 def MiniMax(board,depth,color):
-    if depth == 0:
-        return None, evaluate(board, color)
+    
+    if depth == 0 :
+        return evaluate(board)
+
+    legalMoves = []
+    pieces, moves = allMoves(board, color,req = 'all')
+    
+    print(pieces)
+    print('')
+    print(moves)
+
+    for piece in moves:
+        print(piece)
+    
+    # if color:
+    #     max_eval = -math.inf
+    #     for move in moves:
+
 
 
 def allMoves(board,color,**kwargs):
@@ -50,8 +72,7 @@ def allMoves(board,color,**kwargs):
     if req == 'all':
         for piece in pieces:
             pieceMoves = getLegalMoves(piece[1], board)
-            moves.append((piece[1],piece[0],pieceMoves))
-
+            moves.append((piece[0],piece[1],pieceMoves))
+        return  pieces ,moves
         
     return pieces
-    
