@@ -74,7 +74,7 @@ def board(request):
         }
         
         if isAi =='ai':
-            MiniMax(board, 3, turn, movedStatus, enPassant, captureStatus)
+            MiniMax(board, 3, turn,)
         
         if square:
             moves, checkMate,draw = controller(square, board, turn,movedStatus,enPassant)
@@ -101,7 +101,7 @@ def resetBoard(request):
             ["", "", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", ""],
             ["P", "P", "P", "P", "P", "P", "P", "P"],
-            ["R", "N", "B", "Q", "K", "B", "N", "R"]
+            ["R", "N", "B", "Q", "K", "", "", "R"]
         ]
     request.session['turn'] = True
     request.session['movedStatus'] = [(False,False,False),(False,False,False)]
