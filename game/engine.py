@@ -115,7 +115,9 @@ def mover(oldPlace,newPlace,board):
 
     oX = int(oldPlace[1])
     oY = int(oldPlace[0])
+
     piece = board[oY][oX]
-    
+    piece = promotionHandler(piece, color, nY)
+
     board[oY][oX] = ""
     board[nY][nX] = piece

@@ -111,14 +111,14 @@ function getAiMove(){
 
 // Send the new piece places
 function sendNewPlace(oldID, newID) {
-    const isAi = document.getElementById('isAi').innerText
+    const isAi = document.getElementById('isAi')
     const formdata = new FormData()
     const csrf = document.getElementsByName('csrfmiddlewaretoken')
     formdata.append('csrfmiddlewaretoken', csrf[0].value)
     formdata.append('newSqId', newID)
     formdata.append('oldSqId', oldID)
 
- 
+
 
     $.ajax({
         type: "POST",
@@ -128,7 +128,7 @@ function sendNewPlace(oldID, newID) {
         success: function (res) {
             window.turn = res.turn
             compareBoard(res.board)
-            if (isAi == 'ai'){
+            if (isAi !== null ){
                 getAiMove()
             }
         },

@@ -17,7 +17,7 @@ def playLocal(request):
     return render(request, 'mainPage.html')
 
 def playAI(request):
-    return render(request, 'aiPage.html')
+    return render(request, 'aiPage.html',{'aiCol':request.session['aiColor']})
 
 def board(request):
     if 'turn' in request.session:
@@ -63,6 +63,20 @@ def board(request):
         request.session['captureStatus'] = [(),()]
         enPassant = request.session['captureStatus']
 
+    if 'aiColor' in request.session:
+        aiColor = request.session['aiColor']
+    else:
+        request.session['aiColor'] = None
+        aiColor = request.session['aiColor']
+
+    if request.method =='POST':
+        playColor = request.POST.get('mySelect')
+        if playColor == 'white':
+            request.session['aiColor'] = False
+        elif playColor == 'black':
+            request.session['aiColor'] = True
+            
+        return redirect('playAI')
 
     if is_ajax(request):
         square = request.POST.get('sqId')
@@ -78,7 +92,6 @@ def board(request):
         }
         
 
-    
         if square:
             moves, checkMate,draw = controller(square, board, turn,movedStatus,enPassant)
             return JsonResponse({'moves': moves,'checkMate':checkMate, 'draw':draw, 'captureStatus':captureStatus})
@@ -114,5 +127,5 @@ def resetBoard(request):
 
     request.session['enPassant'] = False,"",""
     request.session['captureStatus'] = [(),()]
-
-    return redirect('playAI')
+    request.session['aiColor'] = None
+    return redirect('chooseMode')

@@ -1,0 +1,82 @@
+body {
+    background-color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+div {
+    position: relative;
+    float: left;
+    width: 50%;
+    height: 100vh;
+}
+
+form {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+}
+.mybtn{
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+label {
+    position: relative;
+    top: 20px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+select{
+    position: relative;
+    top:40px;
+}
+
+.my-select {
+    appearance: none;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+}
+
+.my-select option {
+    background-color: #fff;
+    color: #333;
+}
+a{
+    position: relative;
+    top: 50%;
+    left: 50%;
+}
+
+button {
+    background: rgb(54, 168, 145);
+    font-size: 1.125rem;
+    padding: 1em 2em;
+    color: white;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-radius: 12px;
+
+}
+
+a {
+    color: #222;
+    text-decoration: none;
+}
+
+#firstButton {
+    background-color: rgb(127, 144, 138);
+}
+
+#secondButtonm {
+    background-color: rgb(203, 207, 192);
+}

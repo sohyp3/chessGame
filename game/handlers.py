@@ -1,5 +1,9 @@
+from .helpers import pawnColorMoves
 
-def promotionHandler(piece,base,dest,color,nY):
+def promotionHandler(piece,color,nY):
+    dest = pawnColorMoves(color)[0]
+    base = pawnColorMoves(color)[1]
+
     if piece.lower() == 'p' and nY == 6 + (base * dest):
         if color:
             piece = 'Q'
@@ -7,7 +11,10 @@ def promotionHandler(piece,base,dest,color,nY):
             piece = 'q'
     return piece
 
-def enPassantHandler(oldPlace,newPlace,board,base,dest,enPassant,captureStatus):
+def enPassantHandler(oldPlace,newPlace,color,board,enPassant,captureStatus):
+    dest = pawnColorMoves(color)[0]
+    base = pawnColorMoves(color)[1]
+    
     oX = int(oldPlace[1])
     oY = int(oldPlace[0])
 

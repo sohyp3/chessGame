@@ -1,5 +1,4 @@
 from .handlers import promotionHandler,enPassantHandler,castleHandler
-from .helpers import pawnColorMoves
 
 def movePieces(oldPlace, newPlace, board,movedStatus,enPassant,captureStatus):
 
@@ -16,11 +15,9 @@ def movePieces(oldPlace, newPlace, board,movedStatus,enPassant,captureStatus):
     nX = int(newPlace[1])
     nY = int(newPlace[0])
 
-    dest = pawnColorMoves(color)[0]
-    base = pawnColorMoves(color)[1]
 
-    piece = promotionHandler(piece, base, dest, color, nY)    
-    enPassantHandler(oldPlace, newPlace, board,base,dest,enPassant,captureStatus)
+    piece = promotionHandler(piece, color, nY)    
+    enPassantHandler(oldPlace, newPlace, color,board,enPassant,captureStatus)
     if castleHandler(oldPlace, newPlace, movedStatus, board):
         if board[nY][nX]:
             if color:
