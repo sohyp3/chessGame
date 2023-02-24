@@ -61,7 +61,7 @@ def board(request):
     else:
         # 0 for dark | 1 for light
         request.session['captureStatus'] = [(),()]
-        enPassant = request.session['captureStatus']
+        captureStatus = request.session['captureStatus']
 
     if 'aiColor' in request.session:
         aiColor = request.session['aiColor']
@@ -69,14 +69,7 @@ def board(request):
         request.session['aiColor'] = None
         aiColor = request.session['aiColor']
 
-    if request.method =='POST':
-        playColor = request.POST.get('mySelect')
-        if playColor == 'white':
-            request.session['aiColor'] = False
-        elif playColor == 'black':
-            request.session['aiColor'] = True
-            
-        return redirect('playAI')
+
 
     if is_ajax(request):
         square = request.POST.get('sqId')
@@ -84,8 +77,12 @@ def board(request):
         newSquare = request.POST.get('newSqId')
         oldSquare = request.POST.get('oldSqId')
 
-        getAi = request.POST.get('getAI')
-
+        aiCol = request.POST.get('aiCol')
+        if aiCol == 'False':
+            aiCol = False
+        if aiCol == 'True':
+            aiCol = True
+        
         jsResponseInfo = {
             'board': board,
             'turn': turn
@@ -95,6 +92,8 @@ def board(request):
         if square:
             moves, checkMate,draw = controller(square, board, turn,movedStatus,enPassant)
             return JsonResponse({'moves': moves,'checkMate':checkMate, 'draw':draw, 'captureStatus':captureStatus})
+        
+        
         if newSquare:
             request.session['board'] = movePieces(oldSquare, newSquare, board,movedStatus,enPassant,captureStatus)
             request.session['turn'] = not request.session['turn']
@@ -105,11 +104,23 @@ def board(request):
             }
             
             return JsonResponse(newRs)
-        if getAi:
-            if not turn:
-                printi(board, 3, turn)
+
+        
+    
+        if aiCol == turn:
+            printi(board, 3, turn)
+
         return JsonResponse(jsResponseInfo)
 
+
+    if request.method =='POST':
+        playColor = request.POST.get('mySelect')
+        if playColor == 'white':
+            request.session['aiColor'] = False
+        elif playColor == 'black':
+            request.session['aiColor'] = True
+            
+        return redirect('playAI')
 
 def resetBoard(request):
     request.session['board'] = [

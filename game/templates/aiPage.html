@@ -40,7 +40,7 @@
 
     {%csrf_token%}
 
-    <h1>{{aiCol}}</h1>
+    <h1 hidden id = 'aiCol'>{{aiCol}}</h1>
 
     <div class="popup" id="popup-1">
       <div class="overlay"></div>
@@ -54,7 +54,6 @@
         </a>
       </div>
     </div>
-    <h1 hidden id="isAi">ai</h1>
     <script src="{% static 'js/app.js'%}"></script>
   </body>
 </html>

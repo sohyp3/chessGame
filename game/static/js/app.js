@@ -14,6 +14,12 @@ async function createBoard() {
         turns.innerHTML = "Black's Turn ⚫"
     }
 
+    const aiCOl = document.getElementById('aiCol')
+    if (aiCol !== null ){
+        getAiMove(aiCol.innerText)
+    }
+
+
     window.boardVar = board
 
     for (let i = 0; i < 8; i++) {
@@ -75,7 +81,6 @@ function getMoves(sqId) {
                 checkMateHandler('s')
             }
             highlightAvailableMoves(res.moves)
-
             drawcaptureStatus(res.captureStatus)
         },
 
@@ -86,12 +91,12 @@ function getMoves(sqId) {
     });
 }
 
-function getAiMove(){
+function getAiMove(aiCol){
     const formdata = new FormData()
     const csrf = document.getElementsByName('csrfmiddlewaretoken')
 
     formdata.append('csrfmiddlewaretoken', csrf[0].value)
-    formdata.append('getAI', true)
+    formdata.append('aiCol', aiCol)
 
     $.ajax({
         type: "POST",
@@ -111,7 +116,7 @@ function getAiMove(){
 
 // Send the new piece places
 function sendNewPlace(oldID, newID) {
-    const isAi = document.getElementById('isAi')
+    const aiCOl = document.getElementById('aiCol')
     const formdata = new FormData()
     const csrf = document.getElementsByName('csrfmiddlewaretoken')
     formdata.append('csrfmiddlewaretoken', csrf[0].value)
@@ -128,8 +133,8 @@ function sendNewPlace(oldID, newID) {
         success: function (res) {
             window.turn = res.turn
             compareBoard(res.board)
-            if (isAi !== null ){
-                getAiMove()
+            if (aiCol !== null ){
+                getAiMove(aiCol.innerText)
             }
         },
 
@@ -327,7 +332,6 @@ function drawcaptureStatus(captureStatus) {
     darkStatus.innerHTML = '<h2>Captured Pieces:</h2>'
     lightStatus.innerHTML = '<h2>Captured Pieces:</h2>'
     // Dark
-
 
     for (let i = 0; i < captureStatus[0].length; i++) {
         let image = document.createElement('img')
