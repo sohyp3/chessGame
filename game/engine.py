@@ -1,7 +1,7 @@
 from .helpers import sameColor,strC
 from .getLegalMoves import getLegalMoves
 
-from .movePieces import movePieces
+from .handlers import promotionHandler
 
 import math
 def evaluate(board,color):
@@ -76,7 +76,7 @@ def MiniMax(board,depth,color):
                 board[oY][oX] = oldPiece
 
                 if eval < min_eval:
-                    bestMove = (move[1],newPlace)
+                    bestMove = (move[0],move[1],newPlace)
 
                     min_eval = eval
                     best_move = newPlace
