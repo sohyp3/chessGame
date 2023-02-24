@@ -6,7 +6,9 @@ from .movePieces import movePieces
 
 from .controller import controller
 
-from .engine import MiniMax
+from .engine import MiniMax,printi
+
+import threading
 
 def chooseMode(request):
     return render(request, 'choosePage.html')
@@ -67,15 +69,16 @@ def board(request):
 
         newSquare = request.POST.get('newSqId')
         oldSquare = request.POST.get('oldSqId')
-        isAi = request.POST.get('isAi')
+
+        getAi = request.POST.get('getAI')
+
         jsResponseInfo = {
             'board': board,
             'turn': turn
         }
         
-        if isAi =='ai':
-            MiniMax(board, 3, turn,)
-        
+
+    
         if square:
             moves, checkMate,draw = controller(square, board, turn,movedStatus,enPassant)
             return JsonResponse({'moves': moves,'checkMate':checkMate, 'draw':draw, 'captureStatus':captureStatus})
@@ -87,8 +90,11 @@ def board(request):
                 'board':board,
                 'turn':turn
             }
+            
             return JsonResponse(newRs)
-
+        if getAi:
+            if not turn:
+                printi(board, 3, turn)
         return JsonResponse(jsResponseInfo)
 
 
@@ -101,7 +107,7 @@ def resetBoard(request):
             ["", "", "", "", "", "", "", ""],
             ["", "", "", "", "", "", "", ""],
             ["P", "P", "P", "P", "P", "P", "P", "P"],
-            ["R", "N", "B", "Q", "K", "", "", "R"]
+            ["R", "N", "B", "Q", "K", "B", "N", "R"]
         ]
     request.session['turn'] = True
     request.session['movedStatus'] = [(False,False,False),(False,False,False)]

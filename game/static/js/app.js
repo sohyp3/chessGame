@@ -86,6 +86,28 @@ function getMoves(sqId) {
     });
 }
 
+function getAiMove(){
+    const formdata = new FormData()
+    const csrf = document.getElementsByName('csrfmiddlewaretoken')
+
+    formdata.append('csrfmiddlewaretoken', csrf[0].value)
+    formdata.append('getAI', true)
+
+    $.ajax({
+        type: "POST",
+        url: "/board",
+        enctype: 'multipart/form-data',
+        data: formdata,
+        success: function (res) {
+            
+        },
+
+        cache: false,
+        contentType: false,
+        processData: false,
+
+    });
+}
 
 // Send the new piece places
 function sendNewPlace(oldID, newID) {
@@ -95,7 +117,9 @@ function sendNewPlace(oldID, newID) {
     formdata.append('csrfmiddlewaretoken', csrf[0].value)
     formdata.append('newSqId', newID)
     formdata.append('oldSqId', oldID)
-    formdata.append('isAi',isAi)
+
+ 
+
     $.ajax({
         type: "POST",
         url: "/board",
@@ -104,6 +128,9 @@ function sendNewPlace(oldID, newID) {
         success: function (res) {
             window.turn = res.turn
             compareBoard(res.board)
+            if (isAi == 'ai'){
+                getAiMove()
+            }
         },
 
         cache: false,

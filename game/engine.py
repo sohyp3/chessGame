@@ -4,7 +4,6 @@ from .getLegalMoves import getLegalMoves
 from .movePieces import movePieces
 
 import math
-
 def evaluate(board,color):
     pieceVal = {
         'P':1,
@@ -32,13 +31,13 @@ def evaluate(board,color):
 
     return evalBar
     
-def MiniMax(board,depth,color,):
+def MiniMax(board,depth,color):
     if depth == 0 :
-        print('s?')
-        return evaluate(board,color)
+        return evaluate(board,color),None
 
     pieces, moves = allMoves(board, color,req = 'all')
     best_move = ''
+    best_piece = ''
 
 
     if color:
@@ -49,18 +48,20 @@ def MiniMax(board,depth,color,):
                 oY = int(newPlace[0])
                 oldPiece = board[oY][oX]
                 mover(move[1], newPlace, board)
-                # movePieces(move[1], newPlace, board, movedStatus, enPassant, captureStatus)
-                eval = MiniMax(board, depth-1, not color)
-                # movePieces(newPlace, move[1], board, movedStatus, enPassant, captureStatus)
+                eval = MiniMax(board, depth-1, False)[0]
                 mover(newPlace, move[1], board)
                 board[oY][oX] = oldPiece
                 if eval > max_eval:
                     max_eval = eval
+                    bestMove = (move[1],newPlace)
                     best_move = newPlace
-                max_eval = max(max_eval, eval)
+                    best_piece = move[0]
+                    best_piece_loc = move[1]
 
-                print(f"best move is moving {move[0]}  from {move[1]} to {best_move} || {move[2]}")
-        return max_eval
+
+                # print(f"best move is moving {move[0]}  from {move[1]} to {best_move} || {move[2]}")
+        # print(f'{best_piece} from {best_piece_loc} - to {best_move} eval is : {max_eval}' )
+        return max_eval,bestMove
     else:
         min_eval = math.inf
         for move in moves:
@@ -70,12 +71,19 @@ def MiniMax(board,depth,color,):
                 oldPiece = board[oY][oX]
 
                 mover(move[1], newPlace, board)
-                eval = MiniMax(board, depth-1, not color)
+                eval = MiniMax(board, depth-1, True)[0]
                 mover(newPlace, move[1], board)
                 board[oY][oX] = oldPiece
 
-                min_eval = min(min_eval, eval)
-        return min_eval
+                if eval < min_eval:
+                    bestMove = (move[1],newPlace)
+
+                    min_eval = eval
+                    best_move = newPlace
+                    best_piece = move[0]
+                    best_piece_loc = move[1]
+        # print(f'{best_piece} from {best_piece_loc} - to {best_move} eval {eval} ')
+        return min_eval,bestMove
 
 def allMoves(board,color,**kwargs):
     req = None
@@ -97,6 +105,9 @@ def allMoves(board,color,**kwargs):
         return  pieces ,moves
         
     return pieces
+
+def printi(board,depth,color):
+    print(MiniMax(board, depth, color))
 
 def mover(oldPlace,newPlace,board):
     nX = int(newPlace[1])
