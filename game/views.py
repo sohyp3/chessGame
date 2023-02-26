@@ -108,8 +108,10 @@ def board(request):
         
     
         if aiCol == turn:
-            printi(board, 3, turn)
-
+            # printi(board, 3, turn)
+            request.session['turn'] = not request.session['turn']
+            aiMoves = MiniMax(board, 3, turn)
+            request.session['board'] = movePieces(aiMoves[1][1], aiMoves[1][2], board, movedStatus, enPassant, captureStatus)
         return JsonResponse(jsResponseInfo)
 
 

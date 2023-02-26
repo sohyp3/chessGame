@@ -99,7 +99,8 @@ def allMoves(board,color,**kwargs):
     return pieces
 
 def printi(board,depth,color):
-    print(MiniMax(board, depth, color))
+    # print(type(MiniMax(board, depth, color)))
+    print(MiniMax(board, depth, color)[1])
 
 def mover(oldPlace,newPlace,board,color):
     nX = int(newPlace[1])

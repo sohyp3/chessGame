@@ -104,8 +104,12 @@ function getAiMove(aiCol){
         enctype: 'multipart/form-data',
         data: formdata,
         success: function (res) {
-            
+            console.log(res)
+            window.turn = res.turn
+            compareBoard(res.board)
+            console.log(window.turn)
         },
+
 
         cache: false,
         contentType: false,
