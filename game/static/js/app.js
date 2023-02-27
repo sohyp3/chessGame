@@ -14,7 +14,7 @@ async function createBoard() {
         turns.innerHTML = "Black's Turn ⚫"
     }
 
-    const aiCOl = document.getElementById('aiCol')
+    const aiCol = document.getElementById('aiCol')
     if (aiCol !== null ){
         getAiMove(aiCol.innerText)
     }
