@@ -6,7 +6,7 @@ from .movePieces import movePieces
 
 from .controller import controller
 
-from .engine import MiniMax,printi
+from .engine import MiniMax
 
 import threading
 
@@ -109,6 +109,7 @@ def board(request):
     
         if aiCol == turn:
             aiMoves = MiniMax(board, 3, turn)
+            print(aiMoves)
             request.session['turn'] = not request.session['turn']
             turn = request.session['turn']
             request.session['board'] = movePieces(aiMoves[1][1], aiMoves[1][2], board, movedStatus, enPassant, captureStatus)

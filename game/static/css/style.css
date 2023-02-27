@@ -57,6 +57,10 @@ a {
     background-color: red;
 }
 
+.recentlyMoved{
+    background-color: yellow;
+}
+
 .uiNum {
     position: absolute;
     top: 4px;

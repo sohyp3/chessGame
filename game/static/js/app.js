@@ -104,7 +104,7 @@ function getAiMove(aiCol){
         enctype: 'multipart/form-data',
         data: formdata,
         success: function (res) {
-            console.log(res)
+            removeLastMoveHighlight()
             window.turn = res.turn
             compareBoard(res.board)
         },
@@ -134,6 +134,7 @@ function sendNewPlace(oldID, newID) {
         enctype: 'multipart/form-data',
         data: formdata,
         success: function (res) {
+            removeLastMoveHighlight()
             window.turn = res.turn
             compareBoard(res.board)
             if (aiCol !== null ){
@@ -292,9 +293,25 @@ function compareBoard(newBoard) {
 
         }
     }
+    lastMoveHighlight(changesArr)
     movePieces(changesArr, newBoard)
 }
 
+function lastMoveHighlight(changesArr){
+    // recentlyMoved
+    for (let i = 0; i < changesArr.length; i++) {
+        let square = document.getElementById(changesArr[i]['c'])
+        square.classList.add('recentlyMoved')
+    }
+
+}
+
+function removeLastMoveHighlight(){
+    let lastMoves = document.querySelectorAll('.recentlyMoved')
+    lastMoves.forEach(function (sq){
+        sq.classList.remove('recentlyMoved')
+    })
+}
 
 function upInverse(switcher, string) {
     const isUpperCase = (string) => /^[A-Z]*$/.test(string)
