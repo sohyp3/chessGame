@@ -107,7 +107,6 @@ function getAiMove(aiCol){
             console.log(res)
             window.turn = res.turn
             compareBoard(res.board)
-            console.log(window.turn)
         },
 
 
