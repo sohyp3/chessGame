@@ -1,6 +1,7 @@
 from .helpers import sameColor,strC
 from .getLegalMoves import getLegalMoves
 
+from .controller import controller
 from .handlers import promotionHandler
 
 import math
@@ -35,11 +36,17 @@ counter = 0
 
 def MiniMax(board,depth,color):
     global counter
-    if depth == 0 :
+    
+
+    if depth == 0  :
         counter+=1
+        # print(depth,checkMate,Draw,)
         return evaluate(board,color),None,counter
 
-    pieces, moves = allMoves(board, color,req = 'all')
+    pieces, moves,checkMate,Draw = allMoves(board, color,req = 'all')
+
+    bestMove = None
+    eval = None
 
     if color:
         max_eval = -math.inf
@@ -56,7 +63,8 @@ def MiniMax(board,depth,color):
                 if eval > max_eval:
                     max_eval = eval
                     bestMove = (move[0],move[1],newPlace)
-
+        print(moves)
+        print(bestMove,eval)
         return max_eval,bestMove,counter
     else:
         min_eval = math.inf
@@ -74,10 +82,16 @@ def MiniMax(board,depth,color):
                 if eval < min_eval:
                     bestMove = (move[0],move[1],newPlace)
                     min_eval = eval
-        # print(bestMove)
+        
+        print(moves)
+
+        print(bestMove,eval)
         return min_eval,bestMove,counter
 
 def allMoves(board,color,**kwargs):
+    movedStatus = [(False,False,False),(False,False,False)]
+    enPassant = False,"",""
+
     req = None
     if 'req' in kwargs:
         req = kwargs['req']
@@ -92,15 +106,16 @@ def allMoves(board,color,**kwargs):
     
     if req == 'all':
         for piece in pieces:
-            pieceMoves = getLegalMoves(piece[1], board)
+            # pieceMoves = getLegalMoves(piece[1], board)
+            controllerResult = controller(piece[1], board, color, movedStatus, enPassant)
+            pieceMoves = controllerResult[0]
+            checkMate = controllerResult[1]
+            Draw = controllerResult[2]
             moves.append((piece[0],piece[1],pieceMoves))
-        return  pieces ,moves
+        return  pieces ,moves,checkMate,Draw
         
     return pieces
 
-def printi(board,depth,color):
-    # print(type(MiniMax(board, depth, color)))
-    print(MiniMax(board, depth, color)[1])
 
 def mover(oldPlace,newPlace,board,color):
     nX = int(newPlace[1])
