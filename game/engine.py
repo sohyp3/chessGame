@@ -63,7 +63,7 @@ def MiniMax(board,depth,color):
                 if eval > max_eval:
                     max_eval = eval
                     bestMove = (move[0],move[1],newPlace)
-        print(moves)
+        # print(moves)
         print(bestMove,eval)
         return max_eval,bestMove,counter
     else:
@@ -83,7 +83,7 @@ def MiniMax(board,depth,color):
                     bestMove = (move[0],move[1],newPlace)
                     min_eval = eval
         
-        print(moves)
+        # print(moves)
 
         print(bestMove,eval)
         return min_eval,bestMove,counter
@@ -125,7 +125,7 @@ def mover(oldPlace,newPlace,board,color):
     oY = int(oldPlace[0])
 
     piece = board[oY][oX]
-    piece = promotionHandler(piece, color, nY)
+    # piece = promotionHandler(piece, color, nY)
 
     board[oY][oX] = ""
     board[nY][nX] = piece
