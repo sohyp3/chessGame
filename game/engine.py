@@ -64,7 +64,7 @@ def MiniMax(board,depth,color):
                     max_eval = eval
                     bestMove = (move[0],move[1],newPlace)
         # print(moves)
-        print(bestMove,eval)
+        # print(bestMove,eval)
         return max_eval,bestMove,counter
     else:
         min_eval = math.inf
@@ -85,7 +85,7 @@ def MiniMax(board,depth,color):
         
         # print(moves)
 
-        print(bestMove,eval)
+        # print(bestMove,eval)
         return min_eval,bestMove,counter
 
 def allMoves(board,color,**kwargs):

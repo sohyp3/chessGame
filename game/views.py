@@ -8,7 +8,7 @@ from .controller import controller
 
 from .engine import MiniMax
 
-import threading
+import threading,csv,time
 
 def chooseMode(request):
     return render(request, 'choosePage.html')
@@ -108,10 +108,18 @@ def board(request):
         
     
         if aiCol == turn:
+            startTime = time.time()
             aiMoves = MiniMax(board, 3, turn)
+            endTime = time.time()
+            timeDelta = endTime - startTime
             request.session['turn'] = not request.session['turn']
             turn = request.session['turn']
             request.session['board'] = movePieces(aiMoves[1][1], aiMoves[1][2], board, movedStatus, enPassant, captureStatus)
+            
+            with open('data.csv','a') as file:
+                writer = csv.writer(file)
+                writer.writerow([aiMoves[2],timeDelta])
+            
             newRs= {
                 'board':board,
                 'turn':turn
@@ -148,4 +156,8 @@ def resetBoard(request):
     request.session['enPassant'] = False,"",""
     request.session['captureStatus'] = [(),()]
     request.session['aiColor'] = None
+
+    with open('data.csv','w') as file:
+        writer = csv.writer(file)
+        writer.writerow(['iterations','time'])
     return redirect('chooseMode')
