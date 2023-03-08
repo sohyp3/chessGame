@@ -56,7 +56,6 @@ def castleHandler(oldPlace,newPlace,movedStatus,board):
     # Castling
     # Light Short Castle
     if piece == 'K' and oldCords == 74 and newCords == 77:
-        print('ere')
         board[7][4] = ""
         board[7][7] = ""
         board[7][5] = "R"

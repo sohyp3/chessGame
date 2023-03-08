@@ -4,7 +4,8 @@ from .getLegalMoves import getLegalMoves
 from .controller import controller
 from .handlers import promotionHandler
 
-import math
+import math,random
+
 def evaluate(board,color):
     pieceVal = {
         'P':1,
@@ -45,7 +46,7 @@ def MiniMax(board, depth, alpha, beta, color):
 
     pieces, moves, checkMate, Draw = allMoves(board, color, req='all')
 
-    bestMove = None
+    bestMove = random.choice(moves)
     eval = None
 
     if color:
