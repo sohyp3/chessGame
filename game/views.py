@@ -8,7 +8,7 @@ from .controller import controller
 
 from .engine import MiniMax
 
-import threading,csv,time
+import math,csv,time
 
 def chooseMode(request):
     return render(request, 'choosePage.html')
@@ -109,7 +109,7 @@ def board(request):
     
         if aiCol == turn:
             startTime = time.time()
-            aiMoves = MiniMax(board, 3, turn)
+            aiMoves = MiniMax(board, 3,-math.inf,math.inf, turn)
             endTime = time.time()
             timeDelta = endTime - startTime
             request.session['turn'] = not request.session['turn']

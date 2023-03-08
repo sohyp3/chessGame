@@ -33,17 +33,17 @@ def evaluate(board,color):
     return evalBar
     
 counter = 0
-
-def MiniMax(board,depth,color):
+def MiniMax(board, depth, alpha, beta, color):
     global counter
-    
 
-    if depth == 0  :
-        counter+=1
-        # print(depth,checkMate,Draw,)
-        return evaluate(board,color),None,counter
+    checkMate = False
+    Draw = False
 
-    pieces, moves,checkMate,Draw = allMoves(board, color,req = 'all')
+    if depth == 0 or checkMate or Draw:
+        counter += 1
+        return evaluate(board, color), None, counter
+
+    pieces, moves, checkMate, Draw = allMoves(board, color, req='all')
 
     bestMove = None
     eval = None
@@ -52,20 +52,26 @@ def MiniMax(board,depth,color):
         max_eval = -math.inf
         for move in moves:
             for newPlace in move[2]:
-                counter+=1
+                counter += 1
                 oX = int(newPlace[1])
                 oY = int(newPlace[0])
                 oldPiece = board[oY][oX]
-                mover(move[1], newPlace, board,color)
-                eval = MiniMax(board, depth-1, False)[0]
-                mover(newPlace, move[1], board,color)
+
+                mover(move[1], newPlace, board, color)
+                eval = MiniMax(board, depth-1, alpha, beta, False)[0]
+                mover(newPlace, move[1], board, color)
                 board[oY][oX] = oldPiece
+
                 if eval > max_eval:
                     max_eval = eval
-                    bestMove = (move[0],move[1],newPlace)
-        # print(moves)
-        # print(bestMove,eval)
-        return max_eval,bestMove,counter
+                    bestMove = (move[0], move[1], newPlace)
+
+                alpha = max(alpha, eval)
+                if beta <= alpha:
+                    break
+
+        return max_eval, bestMove, counter
+
     else:
         min_eval = math.inf
         for move in moves:
@@ -74,19 +80,20 @@ def MiniMax(board,depth,color):
                 oY = int(newPlace[0])
                 oldPiece = board[oY][oX]
 
-                mover(move[1], newPlace, board,color)
-                eval = MiniMax(board, depth-1, True)[0]
-                mover(newPlace, move[1], board,color)
+                mover(move[1], newPlace, board, color)
+                eval = MiniMax(board, depth-1, alpha, beta, True)[0]
+                mover(newPlace, move[1], board, color)
                 board[oY][oX] = oldPiece
 
                 if eval < min_eval:
-                    bestMove = (move[0],move[1],newPlace)
+                    bestMove = (move[0], move[1], newPlace)
                     min_eval = eval
-        
-        # print(moves)
 
-        # print(bestMove,eval)
-        return min_eval,bestMove,counter
+                beta = min(beta, eval)
+                if beta <= alpha:
+                    break
+
+        return min_eval, bestMove, counter
 
 def allMoves(board,color,**kwargs):
     movedStatus = [(False,False,False),(False,False,False)]
