@@ -157,7 +157,7 @@ def resetBoard(request):
     request.session['captureStatus'] = [(),()]
     request.session['aiColor'] = None
 
-    with open('data.csv','w') as file:
+    with open('data.csv','a') as file:
         writer = csv.writer(file)
         writer.writerow(['iterations','time'])
     return redirect('chooseMode')

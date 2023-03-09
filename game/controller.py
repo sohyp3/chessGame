@@ -15,10 +15,9 @@ def controller(pieceCoordinates,board,turn,movedStatus,enPassant):
         getOutOfCheckMoves = getOutOfCheck(pieceCoordinates, attackerPieces, board, kingCords)
     
     # Castling Moves
-    if pieceCoordinates == '74':
+    if pieceCoordinates == '74' or pieceCoordinates == '04' :
         castleMoves = castleing(movedStatus, turn, board)
-    elif pieceCoordinates == '04':
-        castleMoves = castleing(movedStatus, turn, board)
+
     #  En Passant Moves
     if enPassant:
         move = enPassantHandler(pieceCoordinates,enPassant, turn,board)

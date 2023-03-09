@@ -15,7 +15,7 @@ async function createBoard() {
     }
 
     const aiCol = document.getElementById('aiCol').innerText
-    if (aiCol !== 'None' ){
+    if (aiCol !== 'None') {
         getAiMove(aiCol)
     }
 
@@ -91,7 +91,7 @@ function getMoves(sqId) {
     });
 }
 
-function getAiMove(aiCol){
+function getAiMove(aiCol) {
     const formdata = new FormData()
     const csrf = document.getElementsByName('csrfmiddlewaretoken')
 
@@ -135,7 +135,7 @@ function sendNewPlace(oldID, newID) {
             removeLastMoveHighlight()
             window.turn = res.turn
             compareBoard(res.board)
-            if (aiCol !== 'None' ){
+            if (aiCol !== 'None') {
                 getAiMove(aiCol)
             }
         },
@@ -295,7 +295,7 @@ function compareBoard(newBoard) {
     movePieces(changesArr, newBoard)
 }
 
-function lastMoveHighlight(changesArr){
+function lastMoveHighlight(changesArr) {
     // recentlyMoved
     for (let i = 0; i < changesArr.length; i++) {
         let square = document.getElementById(changesArr[i]['c'])
@@ -304,9 +304,9 @@ function lastMoveHighlight(changesArr){
 
 }
 
-function removeLastMoveHighlight(){
+function removeLastMoveHighlight() {
     let lastMoves = document.querySelectorAll('.recentlyMoved')
-    lastMoves.forEach(function (sq){
+    lastMoves.forEach(function (sq) {
         sq.classList.remove('recentlyMoved')
     })
 }
