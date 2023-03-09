@@ -16,7 +16,7 @@ async function createBoard() {
 
     const aiCol = document.getElementById('aiCol').innerText
     if (aiCol !== 'None' ){
-        getAiMove(aiCol.innerText)
+        getAiMove(aiCol)
     }
 
 
@@ -97,7 +97,6 @@ function getAiMove(aiCol){
 
     formdata.append('csrfmiddlewaretoken', csrf[0].value)
     formdata.append('aiCol', aiCol)
-
     $.ajax({
         type: "POST",
         url: "/board",
@@ -137,7 +136,7 @@ function sendNewPlace(oldID, newID) {
             window.turn = res.turn
             compareBoard(res.board)
             if (aiCol !== 'None' ){
-                getAiMove(aiCol.innerText)
+                getAiMove(aiCol)
             }
         },
 
