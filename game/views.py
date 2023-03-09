@@ -14,10 +14,10 @@ def chooseMode(request):
     return render(request, 'choosePage.html')
 
 def playLocal(request):
-    return render(request, 'mainPage.html')
+    return render(request, 'chessPage.html',{'aiCol':None})
 
 def playAI(request):
-    return render(request, 'aiPage.html',{'aiCol':request.session['aiColor']})
+    return render(request, 'chessPage.html',{'aiCol':request.session['aiColor']})
 
 def board(request):
     if 'turn' in request.session:

@@ -14,8 +14,8 @@ async function createBoard() {
         turns.innerHTML = "Black's Turn ⚫"
     }
 
-    const aiCol = document.getElementById('aiCol')
-    if (aiCol !== null ){
+    const aiCol = document.getElementById('aiCol').innerText
+    if (aiCol !== 'None' ){
         getAiMove(aiCol.innerText)
     }
 
@@ -119,13 +119,12 @@ function getAiMove(aiCol){
 
 // Send the new piece places
 function sendNewPlace(oldID, newID) {
-    const aiCOl = document.getElementById('aiCol')
+    const aiCol = document.getElementById('aiCol').innerText
     const formdata = new FormData()
     const csrf = document.getElementsByName('csrfmiddlewaretoken')
     formdata.append('csrfmiddlewaretoken', csrf[0].value)
     formdata.append('newSqId', newID)
     formdata.append('oldSqId', oldID)
-
 
 
     $.ajax({
@@ -137,7 +136,7 @@ function sendNewPlace(oldID, newID) {
             removeLastMoveHighlight()
             window.turn = res.turn
             compareBoard(res.board)
-            if (aiCol !== null ){
+            if (aiCol !== 'None' ){
                 getAiMove(aiCol.innerText)
             }
         },
