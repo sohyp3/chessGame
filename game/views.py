@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 
-from .extraFunctions import is_ajax
+from .helpers import is_ajax
 from .movePieces import movePieces
 
 from .controller import controller
