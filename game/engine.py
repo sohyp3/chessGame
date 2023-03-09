@@ -45,8 +45,10 @@ def MiniMax(board, depth, alpha, beta, color):
         return evaluate(board, color), None, counter
 
     pieces, moves, checkMate, Draw = allMoves(board, color, req='all')
-
     bestMove = random.choice(moves)
+    if len(bestMove[2]) >0:
+        bestMove = (bestMove[0], bestMove[1], str(bestMove[2][0]))
+
     eval = None
 
     if color:
